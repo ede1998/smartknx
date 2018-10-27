@@ -1,20 +1,25 @@
 import logging
 import codecs
+import functools
+import asyncio
 
 from knxmap.bus.tunnel import KnxTunnelConnection
 from knxmap.data.constants import *
 from knxmap.messages import parse_message, KnxConnectRequest, KnxConnectResponse, \
                             KnxTunnellingRequest, KnxTunnellingAck, KnxConnectionStateResponse, \
                             KnxDisconnectRequest, KnxDisconnectResponse
+from knxmap import prompt
 
 LOGGER = logging.getLogger(__name__)
 
 
 class KnxBusMonitor(KnxTunnelConnection):
     """Implementation of bus_monitor_mode and group_monitor_mode."""
-    def __init__(self, future, loop=None, group_monitor=True):
+    def __init__(self, future, knxmap, loop=None, group_monitor=True):
         super(KnxBusMonitor, self).__init__(future, loop=loop)
         self.group_monitor = group_monitor
+        self.knxmap = knxmap
+        self.prompt = prompt.Prompt()
 
     def connection_made(self, transport):
         self.transport = transport
@@ -32,6 +37,24 @@ class KnxBusMonitor(KnxTunnelConnection):
         # Send CONNECTIONSTATE_REQUEST to keep the connection alive
         self.loop.call_later(50, self.knx_keep_alive)
 
+
+    def send_datagram(self, target, value=0):
+        tunnel_request = KnxTunnellingRequest(
+            communication_channel=self.communication_channel,
+            sequence_count=self.sequence_count,
+            knx_source=self.knxmap.knx_source,
+            knx_destination=target)
+        tunnel_request.set_peer(self.transport.get_extra_info('sockname'))
+        tunnel_request.apci_group_value_write(value=value)
+        LOGGER.trace_outgoing(tunnel_request)
+        value = self.send_data(tunnel_request.get_message(), target)
+
+    async def read_stdin(self):
+        while (True):
+            line = await self.prompt("Give me packet")
+            print(line)
+        
+        
     def datagram_received(self, data, addr):
         knx_message = parse_message(data)
         if not knx_message:
@@ -47,6 +70,8 @@ class KnxBusMonitor(KnxTunnelConnection):
                 if not self.tunnel_established:
                     self.tunnel_established = True
                 self.communication_channel = knx_message.communication_channel
+                loop = self.prompt.loop
+                asyncio.ensure_future(self.read_stdin(), loop=loop)
             else:
                 if not self.group_monitor and knx_message.ERROR_CODE == 0x23:
                     LOGGER.error('Device does not support BUSMONITOR, try --group-monitor instead')
@@ -63,7 +88,9 @@ class KnxBusMonitor(KnxTunnelConnection):
                     communication_channel=knx_message.communication_channel,
                     sequence_count=knx_message.sequence_counter)
                 LOGGER.trace_outgoing(tunnelling_ack)
-                self.transport.sendto(tunnelling_ack.get_message())
+                #self.loop.call_soon(
+                    #functools.partial(self.send_datagram, "13/1/0", value=1))
+                #TODO here
         elif isinstance(knx_message, KnxTunnellingAck):
             self.print_message(knx_message)
         elif isinstance(knx_message, KnxConnectionStateResponse):

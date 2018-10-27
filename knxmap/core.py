@@ -233,16 +233,17 @@ class KnxMap(object):
             pass
 
     @asyncio.coroutine
-    def monitor(self, targets=None, group_monitor_mode=False):
+    def monitor(self, targets=None, knx_source=None, group_monitor_mode=False):
         if targets:
             self.set_targets(targets)
+        self.knx_source = knx_source
         if group_monitor_mode:
             LOGGER.debug('Starting group monitor')
         else:
             LOGGER.debug('Starting bus monitor')
         future = asyncio.Future()
         transport, protocol = yield from self.loop.create_datagram_endpoint(
-            functools.partial(KnxBusMonitor, future, group_monitor=group_monitor_mode),
+            functools.partial(KnxBusMonitor, future, self, group_monitor=group_monitor_mode),
             remote_addr=list(self.targets)[0])
         self.bus_protocols.append(protocol)
         yield from future

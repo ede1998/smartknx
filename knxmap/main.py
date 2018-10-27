@@ -225,6 +225,7 @@ def main():
                 iface=args.iface))
         elif args.cmd == 'monitor':
             loop.run_until_complete(knxmap.monitor(
+                knx_source=args.knx_source,
                 group_monitor_mode=args.group_monitor_mode))
         elif args.cmd == 'brute':
             bus_target = KnxTargets(args.bus_target)
