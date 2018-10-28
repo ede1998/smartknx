@@ -9,6 +9,8 @@ from knxmap.messages import parse_message, KnxConnectRequest, KnxConnectResponse
                             KnxTunnellingRequest, KnxTunnellingAck, KnxConnectionStateResponse, \
                             KnxDisconnectRequest, KnxDisconnectResponse
 from knxmap import prompt
+from knxmap.messages.tunnelling import KnxTunnellingRequest
+from asyncio.base_futures import CancelledError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -19,7 +21,7 @@ class KnxBusMonitor(KnxTunnelConnection):
         super(KnxBusMonitor, self).__init__(future, loop=loop)
         self.group_monitor = group_monitor
         self.knxmap = knxmap
-        self.prompt = prompt.Prompt()
+        self.prompt = prompt.Prompt(loop=loop)
 
     def connection_made(self, transport):
         self.transport = transport
@@ -51,9 +53,14 @@ class KnxBusMonitor(KnxTunnelConnection):
 
     async def read_stdin(self):
         while (True):
-            line = await self.prompt("Give me packet")
-            print(line)
-        
+            try:
+                line = await self.prompt()
+                group, str_val = line.split()
+                self.loop.call_soon(functools.partial(self.send_datagram, group, value=int(str_val)))
+            except ValueError:
+                pass
+            except asyncio.CancelledError:
+                return
         
     def datagram_received(self, data, addr):
         knx_message = parse_message(data)
@@ -108,6 +115,8 @@ class KnxBusMonitor(KnxTunnelConnection):
     def print_message(self, message):
         """A generic message printing function. It defines
         a format for the monitoring modes."""
+        if not isinstance(message, KnxTunnellingRequest):
+            return
         assert isinstance(message, KnxTunnellingRequest)
         cemi = tpci = apci= {}
         if message.cemi:
