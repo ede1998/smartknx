@@ -62,13 +62,14 @@ class Apci(object):
         self.apci_type |= ((data[0] >> 0) & 1) << 2
         self.apci_type |= ((data[0] >> 1) & 1) << 3
         if self.apci_type in CEMI_APCI_TYPES.values():
-            self.apci_data = 0
-            self.apci_data |= ((data[1] >> 0) & 1) << 0
-            self.apci_data |= ((data[1] >> 1) & 1) << 1
-            self.apci_data |= ((data[1] >> 2) & 1) << 2
-            self.apci_data |= ((data[1] >> 3) & 1) << 3
-            self.apci_data |= ((data[1] >> 4) & 1) << 4
-            self.apci_data |= ((data[1] >> 5) & 1) << 5
+            self.apci_data = [0]
+            self.apci_data[0] |= ((data[1] >> 0) & 1) << 0
+            self.apci_data[0] |= ((data[1] >> 1) & 1) << 1
+            self.apci_data[0] |= ((data[1] >> 2) & 1) << 2
+            self.apci_data[0] |= ((data[1] >> 3) & 1) << 3
+            self.apci_data[0] |= ((data[1] >> 4) & 1) << 4
+            self.apci_data[0] |= ((data[1] >> 5) & 1) << 5
+            self.apci_data.extend(data[2:])
         else:
             self.apci_type <<= 2
             self.apci_type |= ((data[1] >> 4) & 1) << 0

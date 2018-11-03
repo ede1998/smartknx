@@ -2,6 +2,7 @@ import logging
 import codecs
 import functools
 import asyncio
+import sys
 
 from knxmap.bus.tunnel import KnxTunnelConnection
 from knxmap.data.constants import *
@@ -151,4 +152,5 @@ class KnxBusMonitor(KnxTunnelConnection):
                 msg_code=CEMI_PRIMITIVES.get(cemi.message_code),
                 timestamp=codecs.encode(cemi.additional_information.get('timestamp'), 'hex'),
                 raw_frame=codecs.encode(cemi.raw_frame, 'hex'))
-        LOGGER.info(format)
+        #LOGGER.info(format)
+        print(format)
