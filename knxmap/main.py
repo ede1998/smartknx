@@ -247,7 +247,10 @@ def main():
     except KeyboardInterrupt:
         for t in asyncio.Task.all_tasks():
             t.cancel()
-        loop.run_forever()
+        try:
+            loop.run_until_complete(t)
+        except asyncio.CancelledError:
+            pass
 
         if knxmap.bus_protocols:
             # Make sure to send a DISCONNECT_REQUEST

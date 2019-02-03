@@ -57,3 +57,7 @@ docs/_build/
 target/
 
 .idea
+.project
+.pydevproject
+killknx.sh
+killpacket.bin
