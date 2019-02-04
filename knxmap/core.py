@@ -713,7 +713,7 @@ class KnxMap(object):
         else:
             # Use KNX Tunnelling to write group values
             if 'KNXnet/IP Tunnelling' not in knx_gateway.supported_services:
-                LOGGER.error('KNX gateway {gateway} does not support Routing'.format(
+                LOGGER.error('KNX gateway {gateway} does not support Tunneling'.format(
                     gateway=knx_gateway.host))
             future = asyncio.Future()
             transport, protocol = yield from self.loop.create_datagram_endpoint(

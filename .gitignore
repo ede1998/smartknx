@@ -61,3 +61,5 @@ target/
 .pydevproject
 killknx.sh
 killpacket.bin
+
+venv/
