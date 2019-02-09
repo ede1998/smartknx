@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import sys
-import os
-import logging
 
 from knxmap.communicator import KnxCommunicator
 from knxmap.targets import Targets
@@ -22,7 +20,7 @@ except ImportError:
     sys.exit(1)
 
 
-def main():
+def start():
     setup_logger(4)
     loop = asyncio.get_event_loop()
 
@@ -49,7 +47,3 @@ def main():
                 p.knx_tunnel_disconnect()
     finally:
         loop.close()
-
-
-if __name__ == '__main__':
-    main()
