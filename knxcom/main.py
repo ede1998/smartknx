@@ -1,4 +1,4 @@
 
-from knxmap.main import start
+from knx.main import start
 
 start()

@@ -1,9 +1,9 @@
 import logging
 import codecs
 
-from knxmap.bus.tunnel import KnxTunnelConnection
-from knxmap.data.constants import *
-from knxmap.messages import parse_message, KnxConnectRequest, KnxConnectResponse, \
+from knx.bus.tunnel import KnxTunnelConnection
+from knx.data.constants import *
+from knx.messages import parse_message, KnxConnectRequest, KnxConnectResponse, \
                             KnxTunnellingRequest, KnxTunnellingAck, KnxConnectionStateResponse, \
                             KnxDisconnectRequest, KnxDisconnectResponse
 

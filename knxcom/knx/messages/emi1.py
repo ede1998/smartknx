@@ -2,7 +2,7 @@ import io
 import struct
 import logging
 
-import knxmap.utils
+import knx.utils
 from .tp import DataRequest
 
 LOGGER = logging.getLogger(__name__)
@@ -12,9 +12,9 @@ class KnxEmi1Frame(object):
     def __init__(self, data=None, message_code=0x11, knx_source=None,
                  knx_destination=None):
         self.message_code = message_code
-        self.knx_source = knxmap.utils.pack_knx_address(knx_source) \
+        self.knx_source = knx.utils.pack_knx_address(knx_source) \
             if isinstance(knx_source, (str, bytes)) else knx_source
-        self.knx_destination = knxmap.utils.pack_knx_address(knx_destination) \
+        self.knx_destination = knx.utils.pack_knx_address(knx_destination) \
             if isinstance(knx_destination, (str, bytes)) else knx_destination
         #self.knx_source = knx_source
         #self.knx_destination = knx_destination
@@ -25,8 +25,8 @@ class KnxEmi1Frame(object):
         return ('EMI1 Frame message_code: {message_code}, source: {source}, '
                 'destination: {destination}').format(
             message_code=hex(self.message_code),
-            source=knxmap.utils.parse_knx_address(self.knx_source),
-            destination=knxmap.utils.parse_knx_address(self.knx_destination))
+            source=knx.utils.parse_knx_address(self.knx_source),
+            destination=knx.utils.parse_knx_address(self.knx_destination))
 
     @staticmethod
     def _unpack_stream(fmt, stream):

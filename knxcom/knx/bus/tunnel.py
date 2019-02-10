@@ -2,10 +2,10 @@ import asyncio
 import logging
 import struct
 
-import knxmap.utils
-from knxmap.data.constants import *
-from knxmap.exceptions import *
-from knxmap.messages import parse_message, KnxMessage, KnxConnectRequest, KnxConnectResponse, \
+import knx.utils
+from knx.data.constants import *
+from knx.exceptions import *
+from knx.messages import parse_message, KnxMessage, KnxConnectRequest, KnxConnectResponse, \
                             KnxDisconnectRequest, KnxDisconnectResponse, KnxDeviceConfigurationRequest, \
                             KnxDeviceConfigurationAck, KnxTunnellingRequest, KnxTunnellingAck, \
                             KnxConnectionStateRequest, KnxConnectionStateResponse
@@ -99,10 +99,10 @@ class KnxTunnelConnection(asyncio.DatagramProtocol):
                     self.response_queue.remove(response)
                     continue
                 try:
-                    src_addr = knxmap.utils.parse_knx_address(response.cemi.knx_source)
-                    dst_addr = knxmap.utils.parse_knx_address(response.cemi.knx_destination)
+                    src_addr = knx.utils.parse_knx_address(response.cemi.knx_source)
+                    dst_addr = knx.utils.parse_knx_address(response.cemi.knx_destination)
                 except AttributeError:
-                    src_addr = knxmap.utils.unpack_ip_address(response.source)
+                    src_addr = knx.utils.unpack_ip_address(response.source)
                     dst_addr = self.sockname[0]
                 if not src_addr and not dst_addr:
                     continue

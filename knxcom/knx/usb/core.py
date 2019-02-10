@@ -8,8 +8,8 @@ try:
 except ImportError:
     pass
 
-from knxmap.data.constants import CEMI_APCI_TYPES, EMI1_PRIMITIVES
-from knxmap.messages import DataRequest
+from knx.data.constants import CEMI_APCI_TYPES, EMI1_PRIMITIVES
+from knx.messages import DataRequest
 
 LOGGER = logging.getLogger(__name__)
 

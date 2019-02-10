@@ -3,7 +3,7 @@ import io
 import struct
 import logging
 
-from knxmap import KNX_MESSAGE_TYPES, _LAYER_TYPES, KNX_STATUS_CODES
+from knx import KNX_MESSAGE_TYPES, _LAYER_TYPES, KNX_STATUS_CODES
 from .main import KnxMessage
 
 LOGGER = logging.getLogger(__name__)

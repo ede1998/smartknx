@@ -1,20 +1,20 @@
 import struct
 import logging
 
-from knxmap import KNX_MESSAGE_TYPES
-from knxmap.messages.main import KnxMessage
-from knxmap.messages.tpci import Tpci
-from knxmap.messages.apci import Apci
-from knxmap.messages.cemi import CemiFrame
-from knxmap.messages.emi1 import KnxEmi1Frame
-from knxmap.messages.tp import DataRequest, ExtendedDataRequest
-from knxmap.messages.configuration import KnxDeviceConfigurationRequest, KnxDeviceConfigurationAck
-from knxmap.messages.core import KnxSearchRequest, KnxSearchResponse, KnxDescriptionRequest, \
+from knx import KNX_MESSAGE_TYPES
+from knx.messages.main import KnxMessage
+from knx.messages.tpci import Tpci
+from knx.messages.apci import Apci
+from knx.messages.cemi import CemiFrame
+from knx.messages.emi1 import KnxEmi1Frame
+from knx.messages.tp import DataRequest, ExtendedDataRequest
+from knx.messages.configuration import KnxDeviceConfigurationRequest, KnxDeviceConfigurationAck
+from knx.messages.core import KnxSearchRequest, KnxSearchResponse, KnxDescriptionRequest, \
     KnxDescriptionResponse, KnxConnectRequest, KnxConnectResponse, KnxConnectionStateRequest, \
     KnxConnectionStateResponse, KnxDisconnectRequest, KnxDisconnectResponse
-from knxmap.messages.tunnelling import KnxTunnellingRequest, KnxTunnellingAck
-from knxmap.messages.routing import KnxRoutingIndication, KnxRoutingLostMessage, KnxRoutingBusy
-from knxmap.messages.remconf import KnxRemoteDiagnosticRequest, KnxRemoteDiagnosticResponse
+from knx.messages.tunnelling import KnxTunnellingRequest, KnxTunnellingAck
+from knx.messages.routing import KnxRoutingIndication, KnxRoutingLostMessage, KnxRoutingBusy
+from knx.messages.remconf import KnxRemoteDiagnosticRequest, KnxRemoteDiagnosticResponse
 
 LOGGER = logging.getLogger(__name__)
 

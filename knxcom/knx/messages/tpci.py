@@ -3,7 +3,7 @@ import logging
 
 LOGGER = logging.getLogger(__name__)
 
-from knxmap.data.constants import CEMI_TPCI_TYPES, _CEMI_TPCI_TYPES
+from knx.data.constants import CEMI_TPCI_TYPES, _CEMI_TPCI_TYPES
 
 
 class Tpci(object):

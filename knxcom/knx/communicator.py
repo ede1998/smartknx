@@ -14,15 +14,15 @@ except ImportError:
     # Python 3.5 renamed it to Queue
     from asyncio import Queue
 
-import knxmap.utils
-from knxmap.data.constants import *
-from knxmap.messages import CemiFrame, KnxDescriptionResponse, KnxEmi1Frame
-from knxmap.gateway import *
-from knxmap.targets import *
-from knxmap.exceptions import *
-from knxmap.bus.tunnel import KnxTunnelConnection
-from knxmap.bus.router import KnxRoutingConnection
-from knxmap.bus.monitor import KnxBusMonitor
+import knx.utils
+from knx.data.constants import *
+from knx.messages import CemiFrame, KnxDescriptionResponse, KnxEmi1Frame
+from knx.gateway import *
+from knx.targets import *
+from knx.exceptions import *
+from knx.bus.tunnel import KnxTunnelConnection
+from knx.bus.router import KnxRoutingConnection
+from knx.bus.monitor import KnxBusMonitor
 
 LOGGER = logging.getLogger(__name__)
 
@@ -136,7 +136,7 @@ class KnxCommunicator(object):
                                     target_report.additional_individual_addresses = []
                                     for addr in [data[i:i+2] for i in range(0, len(data), 2)]:
                                         target_report.additional_individual_addresses.append(
-                                            knxmap.utils.parse_knx_address(int.from_bytes(addr, 'big')))
+                                            knx.utils.parse_knx_address(int.from_bytes(addr, 'big')))
 
                             # Read manufacurer ID
                             count = yield from bus_protocol.configuration_request(
@@ -152,7 +152,7 @@ class KnxCommunicator(object):
                                         num_elements=count,
                                         property=OBJECTS.get(0).get('PID_MANUFACTURER_ID'))
                                 if conf_response and conf_response.data:
-                                    target_report.manufacturer = knxmap.utils.get_manufacturer_by_id(
+                                    target_report.manufacturer = knx.utils.get_manufacturer_by_id(
                                         int.from_bytes(conf_response.data, 'big'))
 
                             # TODO: do more precise checks what to extract and add it to the target report

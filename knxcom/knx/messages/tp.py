@@ -2,10 +2,10 @@
 import struct
 import logging
 
-from knxmap.data.constants import (TPCI_NUMBERED_CONTROL_DATA_TYPES,
+from knx.data.constants import (TPCI_NUMBERED_CONTROL_DATA_TYPES,
                                    TPCI_UNNUMBERED_CONTROL_DATA_TYPES,
                                    CEMI_APCI_TYPES, CEMI_TPCI_TYPES)
-import knxmap.utils
+import knx.utils
 from .tpci import Tpci
 from .apci import Apci
 
@@ -50,8 +50,8 @@ class DataRequest(object):
         return '%s knx_source: %s, knx_destination: %s, tpci_type: %s, apci_type: %s, ' \
                'destination_type: %s' % (
             self.__class__.__name__,
-            knxmap.utils.parse_knx_address(self.knx_source),
-            knxmap.utils.parse_knx_address(self.knx_destination),
+            knx.utils.parse_knx_address(self.knx_source),
+            knx.utils.parse_knx_address(self.knx_destination),
             CEMI_TPCI_TYPES.get(self.tpci_type),
             CEMI_APCI_TYPES.get(self.apci_type),
             self.npci.get('destination_type'))
@@ -226,8 +226,8 @@ class ExtendedDataRequest(object):
     def __repr__(self):
         return '%s knx_source: %s, knx_destination: %s, tpci_type: %s, apci_type: %s' % (
             self.__class__.__name__,
-            knxmap.utils.parse_knx_address(self.knx_source),
-            knxmap.utils.parse_knx_address(self.knx_destination),
+            knx.utils.parse_knx_address(self.knx_source),
+            knx.utils.parse_knx_address(self.knx_destination),
             CEMI_TPCI_TYPES.get(self.tpci_type),
             CEMI_APCI_TYPES.get(self.apci_type))
 

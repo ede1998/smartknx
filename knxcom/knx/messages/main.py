@@ -3,8 +3,8 @@ import logging
 import socket
 import struct
 
-from knxmap import KNX_CONSTANTS
-#from knxmap.messages import CemiFrame
+from knx import KNX_CONSTANTS
+#from knx.messages import CemiFrame
 from .cemi import CemiFrame
 
 LOGGER = logging.getLogger(__name__)

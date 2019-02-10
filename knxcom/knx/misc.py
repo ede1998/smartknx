@@ -1,8 +1,8 @@
 import codecs
 import logging
 
-from knxmap.messages import KnxMessage
-from knxmap.usb.core import KnxHidReport
+from knx.messages import KnxMessage
+from knx.usb.core import KnxHidReport
 
 LOGGER = logging.getLogger(__name__)
 TRACE_LOG_LEVEL = 9

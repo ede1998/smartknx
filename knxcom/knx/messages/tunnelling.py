@@ -3,7 +3,7 @@ import io
 import struct
 import logging
 
-from knxmap import KNX_MESSAGE_TYPES
+from knx import KNX_MESSAGE_TYPES
 from .main import KnxMessage
 from .cemi import CemiFrame
 from .tp import ExtendedDataRequest
