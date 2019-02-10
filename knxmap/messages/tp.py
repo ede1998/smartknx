@@ -2,10 +2,10 @@
 import struct
 import logging
 
-from knxmap.data.constants import (TPCI_NUMBERED_CONTROL_DATA_TYPES,
+from data.constants import (TPCI_NUMBERED_CONTROL_DATA_TYPES,
                                    TPCI_UNNUMBERED_CONTROL_DATA_TYPES,
                                    CEMI_APCI_TYPES, CEMI_TPCI_TYPES)
-import knxmap.utils
+import utils
 from .tpci import Tpci
 from .apci import Apci
 

@@ -14,15 +14,15 @@ except ImportError:
     # Python 3.5 renamed it to Queue
     from asyncio import Queue
 
-import knxmap.utils
-from knxmap.data.constants import *
-from knxmap.messages import CemiFrame, KnxDescriptionResponse, KnxEmi1Frame
-from knxmap.gateway import *
-from knxmap.targets import *
-from knxmap.exceptions import *
-from knxmap.bus.tunnel import KnxTunnelConnection
-from knxmap.bus.router import KnxRoutingConnection
-from knxmap.bus.monitor import KnxBusMonitor
+import utils
+from data.constants import *
+from messages import CemiFrame, KnxDescriptionResponse, KnxEmi1Frame
+from gateway import *
+from targets import *
+from exceptions import *
+from bus.tunnel import KnxTunnelConnection
+from bus.router import KnxRoutingConnection
+from bus.monitor import KnxBusMonitor
 
 LOGGER = logging.getLogger(__name__)
 

@@ -5,9 +5,9 @@ import collections
 import ipaddress
 import logging
 
-from knxmap.data.constants import *
-from knxmap.messages import KnxMessage
-from knxmap.utils import make_runstate_printable
+from data.constants import *
+from messages.main import KnxMessage
+from utils import make_runstate_printable
 
 __all__ = ['Targets',
            'KnxTargets',

@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 import sys
 
-from knxmap.communicator import KnxCommunicator
-from knxmap.targets import Targets
-from knxmap.misc import setup_logger
+# initialize everything
+from data.constants import *
+from gateway import *
+from messages import *
+from targets import *
+from exceptions import *
+
+
+from communicator import KnxCommunicator
+from targets import Targets
+from misc import setup_logger
 
 # asyncio requires at least Python 3.3
 if sys.version_info.major < 3 or \

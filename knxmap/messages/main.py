@@ -3,7 +3,7 @@ import logging
 import socket
 import struct
 
-from knxmap import KNX_CONSTANTS
+from data.constants import KNX_CONSTANTS
 #from knxmap.messages import CemiFrame
 from .cemi import CemiFrame
 

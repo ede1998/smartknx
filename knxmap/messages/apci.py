@@ -3,7 +3,7 @@ import logging
 
 LOGGER = logging.getLogger(__name__)
 
-from knxmap.data.constants import CEMI_APCI_TYPES, _CEMI_APCI_TYPES
+from data.constants import CEMI_APCI_TYPES, _CEMI_APCI_TYPES
 
 
 class Apci(object):
