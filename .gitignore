@@ -130,5 +130,6 @@ dmypy.json
 .settings/
 killknx.sh
 killpacket.bin
+layout-private.yaml
 
 venv/
