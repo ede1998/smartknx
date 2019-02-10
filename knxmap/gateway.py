@@ -2,8 +2,8 @@
 import asyncio
 import logging
 
-from data.constants import *
-from messages import parse_message, KnxSearchRequest, KnxSearchResponse, KnxDescriptionRequest, \
+from knxmap.data.constants import *
+from knxmap.messages import parse_message, KnxSearchRequest, KnxSearchResponse, KnxDescriptionRequest, \
                             KnxDescriptionResponse, KnxRemoteDiagnosticRequest, \
                             KnxRemoteDiagnosticResponse
 
