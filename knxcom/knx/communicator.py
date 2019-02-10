@@ -65,8 +65,7 @@ class KnxCommunicator(object):
     def add_target(self, target):
         self.q.put_nowait(target)
 
-    @asyncio.coroutine
-    def _knx_description_worker(self):
+    async def _knx_description_worker(self):
         """Send a KnxDescription request to see if target is a KNX device."""
         try:
             while True:
@@ -76,11 +75,11 @@ class KnxCommunicator(object):
                 for _try in range(self.desc_retries):
                     LOGGER.debug('Sending {}. KnxDescriptionRequest to {}'.format(_try, target))
                     future = asyncio.Future()
-                    yield from self.loop.create_datagram_endpoint(
+                    await self.loop.create_datagram_endpoint(
                         functools.partial(KnxGatewayDescription, future,
                                           timeout=self.desc_timeout, nat_mode=self.nat_mode),
                         remote_addr=target)
-                    response = yield from future
+                    response = await future
                     if response:
                         break
 
@@ -104,7 +103,7 @@ class KnxCommunicator(object):
                     if self.configuration_reads:
                         # Try to create a DEVICE_MGMT_CONNECTION connection
                         future = asyncio.Future()
-                        transport, bus_protocol = yield from self.loop.create_datagram_endpoint(
+                        transport, bus_protocol = await self.loop.create_datagram_endpoint(
                             functools.partial(
                                 KnxTunnelConnection,
                                 future,
@@ -115,18 +114,18 @@ class KnxCommunicator(object):
                             remote_addr=target)
                         self.bus_protocols.append(bus_protocol)
                         # Make sure the tunnel has been established
-                        connected = yield from future
+                        connected = await future
                         if connected:
                             configuration = collections.OrderedDict()
                             # Read additional individual addresses
-                            count = yield from bus_protocol.configuration_request(
+                            count = await bus_protocol.configuration_request(
                                         target,
                                         object_type=11,
                                         start_index=0,
                                         property=OBJECTS.get(11).get('PID_ADDITIONAL_INDIVIDUAL_ADDRESSES'))
                             if count and count.data:
                                 count = int.from_bytes(count.data, 'big')
-                                conf_response = yield from bus_protocol.configuration_request(
+                                conf_response = await bus_protocol.configuration_request(
                                         target,
                                         object_type=11,
                                         num_elements=count,
@@ -139,14 +138,14 @@ class KnxCommunicator(object):
                                             knx.utils.parse_knx_address(int.from_bytes(addr, 'big')))
 
                             # Read manufacurer ID
-                            count = yield from bus_protocol.configuration_request(
+                            count = await bus_protocol.configuration_request(
                                         target,
                                         object_type=0,
                                         start_index=0,
                                         property=OBJECTS.get(0).get('PID_MANUFACTURER_ID'))
                             if count and count.data:
                                 count = int.from_bytes(count.data, 'big')
-                                conf_response = yield from bus_protocol.configuration_request(
+                                conf_response = await bus_protocol.configuration_request(
                                         target,
                                         object_type=0,
                                         num_elements=count,
@@ -157,7 +156,7 @@ class KnxCommunicator(object):
 
                             # TODO: do more precise checks what to extract and add it to the target report
                             # for k, v in OBJECTS.get(11).items():
-                            #     count = yield from bus_protocol.configuration_request(target,
+                            #     count = await bus_protocol.configuration_request(target,
                             #                                                           object_type=11,
                             #                                                           start_index=0,
                             #                                                           property=v)
@@ -165,7 +164,7 @@ class KnxCommunicator(object):
                             #         count = int.from_bytes(count.data, 'big')
                             #     else:
                             #         continue
-                            #     conf_response = yield from bus_protocol.configuration_request(target,
+                            #     conf_response = await bus_protocol.configuration_request(target,
                             #                                                                   object_type=11,
                             #                                                                   num_elements=count,
                             #                                                                   property=v)
@@ -182,8 +181,7 @@ class KnxCommunicator(object):
         except (asyncio.CancelledError, asyncio.QueueEmpty):
             pass
 
-    @asyncio.coroutine
-    def monitor(self, targets=None, group_monitor_mode=False):
+    async def monitor(self, targets=None, group_monitor_mode=False):
         if targets:
             self.set_targets(targets)
         if group_monitor_mode:
@@ -191,15 +189,14 @@ class KnxCommunicator(object):
         else:
             LOGGER.debug('Starting bus monitor')
         future = asyncio.Future()
-        transport, protocol = yield from self.loop.create_datagram_endpoint(
+        transport, protocol = await self.loop.create_datagram_endpoint(
             functools.partial(KnxBusMonitor, future, group_monitor=group_monitor_mode),
             remote_addr=list(self.targets)[0])
         self.bus_protocols.append(protocol)
         LOGGER.debug('here i am')
-        yield from future
+        await future
 
-    @asyncio.coroutine
-    def group_writer(self, target, value=0, routing=False, desc_timeout=2,
+    async def group_writer(self, target, value=0, routing=False, desc_timeout=2,
                      desc_retries=2, iface=False):
         self.desc_timeout = desc_timeout
         self.desc_retries = desc_retries
@@ -207,7 +204,7 @@ class KnxCommunicator(object):
         workers = [asyncio.Task(self._knx_description_worker(), loop=self.loop)
                    for _ in range(self.max_workers if len(self.targets) > self.max_workers else len(self.targets))]
         self.t0 = time.time()
-        yield from self.q.join()
+        await self.q.join()
         self.t1 = time.time()
         for w in workers:
             w.cancel()
@@ -225,15 +222,15 @@ class KnxCommunicator(object):
                 LOGGER.error('KNX gateway {gateway} does not support Tunneling'.format(
                     gateway=knx_gateway.host))
             future = asyncio.Future()
-            transport, protocol = yield from self.loop.create_datagram_endpoint(
+            transport, protocol = await self.loop.create_datagram_endpoint(
                 functools.partial(KnxTunnelConnection, future, nat_mode=self.nat_mode),
                 remote_addr=(knx_gateway.host, knx_gateway.port))
             self.bus_protocols.append(protocol)
             # Make sure the tunnel has been established
-            connected = yield from future
+            connected = await future
             if connected:
                 # TODO: what if we have devices that access more advanced payloads?
                 if isinstance(value, str):
                     value = int(value)
-                yield from protocol.apci_group_value_write(target, value=value)
+                await protocol.apci_group_value_write(target, value=value)
                 protocol.knx_tunnel_disconnect()
