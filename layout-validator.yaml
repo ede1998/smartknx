@@ -2,5 +2,37 @@ type: //rec
 required:
   project: //str
   buildings:
+#=================== building ====================
     type: //arr
-    contents: tag:building
+    contents:
+      type: //rec
+      optional:
+        url: //str
+      required:
+        name: //str
+        floors:
+#===================== floor =====================
+          type: //arr
+          contents:
+            type: //rec
+            optional:
+              url: //str
+            required:
+              name: //str
+              rooms:
+#===================== room ======================
+                type: //arr
+                contents:
+                  type: //rec
+                  required:
+                    name: //str
+                    devices:
+#=================== devices =====================
+                      type: //arr
+                      contents:
+                        type: //any
+                        of:
+                        - tag:light
+                        - tag:outlet
+                        - tag:blind_old
+                        - tag:blind

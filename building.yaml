@@ -1,28 +1,47 @@
-- uri: tag:room
+- uri: tag:light
   schema:
     type: //rec
     required:
-      name: //str
-      devices:
-        type: //arr
-        contents: //any
-- uri: tag:floor
+      light:
+        type: //rec
+        required:
+          read: //str
+          write: //str
+        optional:
+          name: //str
+- uri: tag:outlet
   schema:
     type: //rec
     required:
-      name: //str
-      rooms:
-        type: //arr
-        contents: tag:room
-    optional:
-      url: //str
-- uri: tag:building
+      outlet:
+        type: //rec
+        required:
+          read: //str
+          write: //str
+        optional:
+          name: //str
+- uri: tag:blind_old
   schema:
     type: //rec
     required:
-      name: //str
-      floors:
-        type: //arr
-        contents: tag:floor
-    optional:
-      url: //str
+      blind_old:
+        type: //rec
+        required:
+          read: //str
+          write-direction: //str
+          write-stop: //str
+        optional:
+          name: //str
+- uri: tag:blind
+  schema:
+    type: //rec
+    required:
+      blind:
+        type: //rec
+        required:
+          read-position: //str
+          write-direction: //str
+          write-direction: //str
+          write-stop: //str
+        optional:
+          name: //str
