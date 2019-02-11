@@ -1,0 +1,28 @@
+- uri: tag:room
+  schema:
+    type: //rec
+    required:
+      name: //str
+      devices:
+        type: //arr
+        contents: //any
+- uri: tag:floor
+  schema:
+    type: //rec
+    required:
+      name: //str
+      rooms:
+        type: //arr
+        contents: tag:room
+    optional:
+      url: //str
+- uri: tag:building
+  schema:
+    type: //rec
+    required:
+      name: //str
+      floors:
+        type: //arr
+        contents: tag:floor
+    optional:
+      url: //str

@@ -21,6 +21,10 @@ class ProjectFactory:
             raise Exception("YAML file invalid, no project name given")
         return doc.values(), Container(top_level_keys[0])
     
-    def __create_object(self):
+    def __create_container(self, doc):
+
+        return doc.values(), Container()
+        
+    def __create_object(self, doc):
         pass
         

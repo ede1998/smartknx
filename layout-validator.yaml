@@ -1,0 +1,6 @@
+type: //rec
+required:
+  project: //str
+  buildings:
+    type: //arr
+    contents: tag:building
