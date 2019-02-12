@@ -1,41 +1,60 @@
+import oyaml as yaml
 
-class Object:
+
+class Object(yaml.YAMLObject):
     def __init__(self, name):
         super().__init__()
         self.name = name
-        
+
     def __repr__(self):
-        return '{ type: ' + str(type(self)) + ', name: ' + self.name + ' }'
-    
-class OnOff(Object):
-    address_read = None
-    address_write = None
-    
-class Light(OnOff):
-    def __init__(self, name='Light'):
-        super().__init__(name)
+        return "%s(name=%r)" % (self.__class__.__name__, self.name)
 
-class Outlet(OnOff):
-    def __init__(self, name='Outlet'):
-        super().__init__(name)
-        
-class BlindOld():
-    def __init__(self, name='Blinds'):
-        super().__init__(name)
 
-    address_read_top = None
-    address_read_bottom = None
-    address_write_direction = None
-    address_write_stop = None
+class Light(Object):
+    yaml_tag = u'!Light'
 
-class GarageDoor(BlindOld):
-    def __init__(self, name='Garage'):
+    def __init__(self, write, read, name='Light'):
         super().__init__(name)
-        
-class Blind():
-    def __init__(self, name='Blinds'):
+        self.read = read
+        self.write = write
+
+    def __repr__(self):
+        return "%s(name=%r, read=%r, write=%r)" % (
+            self.__class__.__name__, self.name, self.read, self.write)
+
+
+class Outlet(Object):
+    yaml_tag = u'!Outlet'
+
+    def __init__(self, read, write, name='Outlet'):
         super().__init__(name)
-    
-    address_read_position = None
-    address_write_direction = None
-    address_write_stop = None
+        self.read = read
+        self.write = write
+
+    def __repr__(self):
+        return "%s(name=%r, read=%r, write=%r)" % (
+            self.__class__.__name__, self.name, self.read, self.write)
+
+
+class BlindOld(Object):
+    yaml_tag = u'BlindOld'
+
+    def __init__(self, read_top, read_bottom, write_direction, write_stop, name='Blinds'):
+        super().__init__(name)
+        self.read_top = read_top
+        self.read_bottom = read_bottom
+        self.write_direction = write_direction
+        self.write_stop = write_stop
+
+
+#class GarageDoor(BlindOld):
+    #def __init__(self, name='Garage'):
+        #super().__init__(name)
+
+class Blind(Object):
+    def __init__(self, read_position, write_position, write_direction, write_stop, name='Blinds'):
+        super().__init__(name)
+        self.read_position = read_position
+        self.write_position = write_position
+        self.write_direction = write_direction
+        self.write_stop = write_stop
