@@ -27,9 +27,10 @@
       blind_old:
         type: //rec
         required:
-          read: //str
-          write-direction: //str
-          write-stop: //str
+          read_top: //str
+          read_bot: //str
+          write_direction: //str
+          write_stop: //str
         optional:
           name: //str
 - uri: tag:blind
@@ -39,9 +40,9 @@
       blind:
         type: //rec
         required:
-          read-position: //str
-          write-position: //str
-          write-direction: //str
-          write-stop: //str
+          read_position: //str
+          write_position: //str
+          write_direction: //str
+          write_stop: //str
         optional:
           name: //str
