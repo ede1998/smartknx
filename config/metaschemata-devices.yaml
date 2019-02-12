@@ -40,7 +40,7 @@
         type: //rec
         required:
           read-position: //str
-          write-direction: //str
+          write-position: //str
           write-direction: //str
           write-stop: //str
         optional:
