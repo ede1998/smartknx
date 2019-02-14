@@ -7,32 +7,33 @@ required:
     contents:
       type: //rec
       optional:
-        url: //str
-      required:
         name: //str
+      required:
+        url: //str
         floors:
 #===================== floor =====================
           type: //arr
           contents:
             type: //rec
             optional:
-              url: //str
-            required:
               name: //str
+            required:
+              url: //str
               rooms:
 #===================== room ======================
                 type: //arr
                 contents:
                   type: //rec
-                  required:
+                  optional:
                     name: //str
+                  required:
                     devices:
 #=================== devices =====================
                       type: //arr
                       contents:
                         type: //any
                         of:
-                        - tag:light
-                        - tag:outlet
-                        - tag:blind_old
-                        - tag:blind
+                        - tag:Light
+                        - tag:Outlet
+                        - tag:BlindOld
+                        - tag:Blind
