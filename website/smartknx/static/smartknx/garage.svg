@@ -1,0 +1,8 @@
+<svg height="512pt" viewBox="0 0 512 512.00001" width="512pt" xmlns="http://www.w3.org/2000/svg">
+    <path d="m23.511719 512h62.996093v-352.609375h338.984376v352.609375h62.996093v-406.886719h-464.976562zm0 0"/> <!-- frame -->
+    <path d="m0 0h512v75.113281h-512zm0 0"/> <!-- top bar -->
+    <path d="m116.507812 189.390625h278.984376v36h-278.984376zm0 0"/> <!-- upmost bar in door -->
+    <path d="m116.507812 255.390625h278.984376v36h-278.984376zm0 0"/> <!-- middle bar in door -->
+    <path d="m116.507812 321.390625h278.984376v36h-278.984376zm0 0"/> <!-- lower middle bar in door -->
+    <path d="m116.507812 387.390625h278.984376v124.609375h-278.984376zm0 0"/> <!-- bottom bar in door -->
+</svg>
