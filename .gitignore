@@ -130,6 +130,7 @@ dmypy.json
 .settings/
 killknx.sh
 killpacket.bin
-layout.yaml
 
-venv/
+# config files
+layout.yaml
+network.yaml
