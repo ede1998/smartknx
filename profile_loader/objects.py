@@ -1,6 +1,6 @@
 import itertools
 import oyaml as yaml  # make sure order in yaml file is preserved
-from knx_message import KNXMessage, Type
+from .knx_message import KNXMessage, Type
 
 
 class Object(yaml.YAMLObject):

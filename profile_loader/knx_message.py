@@ -1,4 +1,4 @@
-import group_address as ga
+from . import group_address as ga
 from enum import Enum, auto
 
 
