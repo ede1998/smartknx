@@ -1,5 +1,5 @@
 import itertools
-import oyaml as yaml
+import oyaml as yaml # make sure order in yaml file is preserved
 
 
 class Object(yaml.YAMLObject):

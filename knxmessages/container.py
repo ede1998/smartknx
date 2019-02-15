@@ -1,4 +1,4 @@
-import oyaml as yaml
+import oyaml as yaml # make sure order in yaml file is preserved
 
 
 class Container(yaml.YAMLObject):
@@ -41,7 +41,6 @@ class Box(yaml.YAMLObject):
     @classmethod
     def from_yaml(cls, loader, node):
         m = loader.construct_mapping(node)
-        print(m)
         m['children'] = m.pop('devices')
         return cls(**m)
 
