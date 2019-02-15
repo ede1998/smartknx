@@ -1,0 +1,48 @@
+- uri: tag:Light
+  schema:
+    type: //rec
+    required:
+      Light:
+        type: //rec
+        required:
+          read: //str
+          write: //str
+        optional:
+          name: //str
+- uri: tag:Outlet
+  schema:
+    type: //rec
+    required:
+      Outlet:
+        type: //rec
+        required:
+          read: //str
+          write: //str
+        optional:
+          name: //str
+- uri: tag:BlindOld
+  schema:
+    type: //rec
+    required:
+      BlindOld:
+        type: //rec
+        required:
+          read_top: //str
+          read_bottom: //str
+          write_direction: //str
+          write_stop: //str
+        optional:
+          name: //str
+- uri: tag:Blind
+  schema:
+    type: //rec
+    required:
+      Blind:
+        type: //rec
+        required:
+          read_position: //str
+          write_position: //str
+          write_direction: //str
+          write_stop: //str
+        optional:
+          name: //str
