@@ -15,7 +15,15 @@ Including another URLconf
 """
 from django.urls import path
 from . import views
+from . import configuration
+from functools import partial
 
 urlpatterns = [
-    path('', views.view),
+    path('', views.navigation, name='root'),
 ]
+
+for area in configuration.children:
+    urlpatterns.append(path(area.url, partial(views.navigation, area=area), name=area.id))
+    for subarea in area.children:
+        url = area.url + '/' + subarea.url
+        urlpatterns.append(path(url, partial(views.details, area=subarea), name=subarea.id))
