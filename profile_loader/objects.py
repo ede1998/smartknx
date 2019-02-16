@@ -80,8 +80,7 @@ class Blind(Object):
         return cls(**loader.construct_mapping(node))
 
 
-_path_objects = ['buildings', None,
-                 'floors', None,
+_path_objects = ['floors', None,
                  'rooms', None,
                  'devices', None]
 
