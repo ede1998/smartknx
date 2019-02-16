@@ -1,35 +1,32 @@
 project: the project name
-buildings: # all buildings in project
-- name: main building # names are entirely optional
-  url: mb # url used for website
-  floors: # different floors of this building
+floors: # different floors of this building
   - name: first floor
     url: ff # url is required
     rooms:
-    - name: kitchen
-      devices:
-      - Light: # we want a lamp
-          name: Sink
-          read: 1/2/3  # address to check if lamp is on
-          write: 4/5/6 # address to toggle lamp on/off
-      - Outlet: # outlet that can be turned on/off
-          name: AC
-          read: 13/12/11 # check whether on/off
-          write: 10/9/8  # toggle on/off
-    - name: bath room
-      devices:
-      - Blind: # Window blind
-          name: Blind            # if not given: default value
-          read_position: 7/8/9   # read position of blind (%)
-          write_position: 1/4/5  # write position blind should move to (%)
-          write_direction: 5/4/1 # write direction to move in
-          write_stop: 0/0/1      # stop movement of blind
+      - name: kitchen
+        devices:
+          - Light: # we want a lamp
+              name: Sink
+              read: 1/2/3 # address to check if lamp is on
+              write: 4/5/6 # address to toggle lamp on/off
+          - Outlet: # outlet that can be turned on/off
+              name: AC
+              read: 13/12/11 # check whether on/off
+              write: 10/9/8 # toggle on/off
+      - name: bath room
+        devices:
+          - Blind: # Window blind
+              name: Blind # if not given: default value
+              read_position: 7/8/9 # read position of blind (%)
+              write_position: 1/4/5 # write position blind should move to (%)
+              write_direction: 5/4/1 # write direction to move in
+              write_stop: 0/0/1 # stop movement of blind
   - url: sec_floor
     rooms:
-    - devices:
-      - BlindOld:
-          name: Blind
-          read_top: 10/3/1     # reads 1 if blind is at very top
-          read_bottom: 10/3/2   # reads 1 if blind is at very bottom
-          write_direction: 1/2/6
-          write_stop: 0/0/2
+      - devices:
+          - BlindOld:
+              name: Blind
+              read_top: 10/3/1 # reads 1 if blind is at very top
+              read_bottom: 10/3/2 # reads 1 if blind is at very bottom
+              write_direction: 1/2/6
+              write_stop: 0/0/2

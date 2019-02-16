@@ -1,8 +1,8 @@
 type: //rec
 required:
   project: //str
-  buildings:
-#=================== building ====================
+  floors:
+#===================== floor =====================
     type: //arr
     contents:
       type: //rec
@@ -10,30 +10,21 @@ required:
         name: //str
       required:
         url: //str
-        floors:
-#===================== floor =====================
+        rooms:
+#===================== room ======================
           type: //arr
           contents:
             type: //rec
             optional:
               name: //str
             required:
-              url: //str
-              rooms:
-#===================== room ======================
+              devices:
+#=================== devices =====================
                 type: //arr
                 contents:
-                  type: //rec
-                  optional:
-                    name: //str
-                  required:
-                    devices:
-#=================== devices =====================
-                      type: //arr
-                      contents:
-                        type: //any
-                        of:
-                        - tag:Light
-                        - tag:Outlet
-                        - tag:BlindOld
-                        - tag:Blind
+                  type: //any
+                  of:
+                    - tag:Light
+                    - tag:Outlet
+                    - tag:BlindOld
+                    - tag:Blind
