@@ -1,4 +1,16 @@
 {% extends 'smartknx/base.html' %}
+{% load smartknx_extra %}
 {% block content %}
-  {% include 'smartknx/card_light.html' %}
+  {% for device in current.children %}
+  {% if device|classname == "Light" %}
+  {% include 'smartknx/card_light.html' with device=device only %}
+  {% elif device|classname == "Outlet" %}
+  {% include 'smartknx/card_outlet.html' with device=device only %}
+  {% elif device|classname == "BlindOld" %}
+  {% include 'smartknx/card_blind_old.html' with device=device only %}
+  {% elif device|classname == "Blind" %}
+  {% include 'smartknx/card_blind_old.html' with device=device only %}
+  {% endif %}
+  <br>
+  {% endfor %}
 {% endblock %}
