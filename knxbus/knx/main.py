@@ -21,7 +21,7 @@ except ImportError:
 
 
 def start():
-    setup_logger(4)
+    setup_logger(2)
     loop = asyncio.get_event_loop()
 
     knxcom = KnxCommunicator()

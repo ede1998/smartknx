@@ -2,6 +2,7 @@ import logging
 import codecs
 import functools
 import asyncio
+from knx.pubsub import RedisConnector
 import sys
 
 from knx.bus.tunnel import KnxTunnelConnection
@@ -9,20 +10,18 @@ from knx.data.constants import *
 from knx.messages import parse_message, KnxConnectRequest, KnxConnectResponse, \
                             KnxTunnellingRequest, KnxTunnellingAck, KnxConnectionStateResponse, \
                             KnxDisconnectRequest, KnxDisconnectResponse
-from knxmap import prompt
-from knxmap.messages.tunnelling import KnxTunnellingRequest
-from asyncio.base_futures import CancelledError
+
 
 LOGGER = logging.getLogger(__name__)
 
 
 class KnxBusMonitor(KnxTunnelConnection):
     """Implementation of bus_monitor_mode and group_monitor_mode."""
-    def __init__(self, future, knxmap, loop=None, group_monitor=True):
+    def __init__(self, future, loop=None, group_monitor=True):
         super(KnxBusMonitor, self).__init__(future, loop=loop)
         self.group_monitor = group_monitor
-        self.knxmap = knxmap
-        self.prompt = prompt.Prompt(loop=loop)
+        self.redis = None
+        self.sequence_counter_incoming = -1
 
     def connection_made(self, transport):
         self.transport = transport
@@ -39,30 +38,36 @@ class KnxBusMonitor(KnxTunnelConnection):
         self.transport.sendto(connect_request.get_message())
         # Send CONNECTIONSTATE_REQUEST to keep the connection alive
         self.loop.call_later(50, self.knx_keep_alive)
+    
+    def subscribe_to_redis(self):
+        self.redis = RedisConnector()
+        asyncio.create_task(self.redis.initialize('testchannel:*', print))
+    
+    def publish_to_redis(self, message):
+        if not isinstance(message, KnxTunnellingRequest):
+            return
+        cemi = tpci = apci= {}
+        if message.cemi:
+            cemi = message.cemi
+            if cemi.tpci:
+                tpci = cemi.tpci
+                if cemi.apci:
+                    apci = cemi.apci
 
-
-    def send_datagram(self, target, value=0):
-        tunnel_request = KnxTunnellingRequest(
-            communication_channel=self.communication_channel,
-            sequence_count=self.sequence_count,
-            knx_source=self.knxmap.knx_source,
-            knx_destination=target)
-        tunnel_request.set_peer(self.transport.get_extra_info('sockname'))
-        tunnel_request.apci_group_value_write(value=value)
-        LOGGER.trace_outgoing(tunnel_request)
-        value = self.send_data(tunnel_request.get_message(), target)
-
-    async def read_stdin(self):
-        while (True):
-            try:
-                line = await self.prompt()
-                group, str_val = line.split()
-                self.loop.call_soon(functools.partial(self.send_datagram, group, value=int(str_val)))
-            except ValueError:
-                pass
-            except asyncio.CancelledError:
-                return
+        if not (cemi.knx_destination and cemi.extended_control_field and \
+                cemi.extended_control_field.get('address_type')):
+            return
         
+        if message.sequence_counter <= self.sequence_counter_incoming:
+            return
+        
+        self.sequence_counter_incoming = message.sequence_counter
+
+        dst_addr = message.parse_knx_group_address(cemi.knx_destination)
+        data = apci.apci_data
+        
+        asyncio.create_task(self.redis.publish('testchannel:' + dst_addr, str([hex(i) for i in data])))
+    
     def datagram_received(self, data, addr):
         knx_message = parse_message(data)
         if not knx_message:
@@ -78,8 +83,8 @@ class KnxBusMonitor(KnxTunnelConnection):
                 if not self.tunnel_established:
                     self.tunnel_established = True
                 self.communication_channel = knx_message.communication_channel
-                loop = self.prompt.loop
-                asyncio.ensure_future(self.read_stdin(), loop=loop)
+                # subscribe to channels
+                self.subscribe_to_redis()
             else:
                 if not self.group_monitor and knx_message.ERROR_CODE == 0x23:
                     LOGGER.error('Device does not support BUSMONITOR, try --group-monitor instead')
@@ -96,9 +101,8 @@ class KnxBusMonitor(KnxTunnelConnection):
                     communication_channel=knx_message.communication_channel,
                     sequence_count=knx_message.sequence_counter)
                 LOGGER.trace_outgoing(tunnelling_ack)
-                #self.loop.call_soon(
-                    #functools.partial(self.send_datagram, "13/1/0", value=1))
-                #TODO here
+                # publish to redis
+                self.publish_to_redis(knx_message)
         elif isinstance(knx_message, KnxTunnellingAck):
             self.print_message(knx_message)
         elif isinstance(knx_message, KnxConnectionStateResponse):
@@ -152,5 +156,4 @@ class KnxBusMonitor(KnxTunnelConnection):
                 msg_code=CEMI_PRIMITIVES.get(cemi.message_code),
                 timestamp=codecs.encode(cemi.additional_information.get('timestamp'), 'hex'),
                 raw_frame=codecs.encode(cemi.raw_frame, 'hex'))
-        #LOGGER.info(format)
-        print(format)
+        LOGGER.info(format)
