@@ -24,3 +24,16 @@ Enable full debugging and verbosity for development:
 ```
 PYTHONASYNCIODEBUG=1 knxmap -v scan 192.168.178.20 1.1.0-1.1.6 --bus-info
 ```
+
+
+
+# Testing
+redis-cli using docker
+```
+docker run -it --rm redis redis-cli -h 192.168.140.43 -p 6379
+```
+
+redis docker: 
+```
+docker run -p 6379:6379 -d redis
+```

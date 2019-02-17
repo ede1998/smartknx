@@ -41,7 +41,7 @@ class KnxBusMonitor(KnxTunnelConnection):
     
     def subscribe_to_redis(self):
         self.redis = RedisConnector()
-        asyncio.create_task(self.redis.initialize('testchannel:*', print))
+        asyncio.create_task(self.redis.initialize(print))
     
     def publish_to_redis(self, message):
         if not isinstance(message, KnxTunnellingRequest):
@@ -66,7 +66,7 @@ class KnxBusMonitor(KnxTunnelConnection):
         dst_addr = message.parse_knx_group_address(cemi.knx_destination)
         data = apci.apci_data
         
-        asyncio.create_task(self.redis.publish('testchannel:' + dst_addr, str([hex(i) for i in data])))
+        asyncio.create_task(self.redis.publish(dst_addr, str([hex(i) for i in data])))
     
     def datagram_received(self, data, addr):
         knx_message = parse_message(data)
