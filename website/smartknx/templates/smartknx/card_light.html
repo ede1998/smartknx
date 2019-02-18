@@ -1,7 +1,11 @@
 {% load static %}
 <div class="card bg-dark text-white">
-    <img class="card-img-top img-fluid" src="{% static 'smartknx/light_on.svg' %}" alt="Card image"
-        style="max-height:200px">
+    <img class="card-img-top img-fluid" src="
+        {% if device.read.data is True %}
+            {% static 'smartknx/light_on.svg' %}
+        {% else %}
+            {% static 'smartknx/light_off.svg' %}
+        {% endif %}" alt="Light" style="max-height:200px">
     <div class="card-body text-center">
         <h4 class="card-text">{{ device.name }}</h4>
     </div>
