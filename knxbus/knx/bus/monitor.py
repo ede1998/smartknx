@@ -21,6 +21,7 @@ class KnxBusMonitor(KnxTunnelConnection):
         super(KnxBusMonitor, self).__init__(future, loop=loop)
         self.group_monitor = group_monitor
         self.redis = None
+        self.knx_source_address = '15.15.254'
         self.sequence_counter_incoming = -1
 
     def connection_made(self, transport):
@@ -39,9 +40,12 @@ class KnxBusMonitor(KnxTunnelConnection):
         # Send CONNECTIONSTATE_REQUEST to keep the connection alive
         self.loop.call_later(50, self.knx_keep_alive)
     
+    def send_message(self, group, value):
+        asyncio.create_task(self.apci_group_value_write(group, value=value))
+
     def subscribe_to_redis(self):
         self.redis = RedisConnector()
-        asyncio.create_task(self.redis.initialize(print))
+        asyncio.create_task(self.redis.initialize(self.send_message))
     
     def publish_to_redis(self, message):
         if not isinstance(message, KnxTunnellingRequest):

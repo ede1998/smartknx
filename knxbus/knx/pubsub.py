@@ -18,7 +18,11 @@ class RedisConnector:
 
     async def receive(self, callback):
        async for msg in self.channel.iter():
-           callback(msg)
+           channel = msg[0].decode('utf-8')
+           content = msg[1].decode('utf-8')
+
+           channel_suffix = channel[len(self.to_bus_channel):]
+           callback(channel_suffix, content)
 
     async def publish(self, channel_suffix, text):
        await self.con_pool.publish(self.from_bus_channel + channel_suffix, text)
