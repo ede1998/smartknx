@@ -2,39 +2,49 @@ import asyncio
 import aioredis
 
 
-
 class RedisConnector:
 
-    def __init__(self):
-        self.to_bus_channel = 'smartknx:test:v0:to_bus:'
-        self.from_bus_channel = 'smartknx:test:v0:from_bus:'
+    def __init__(self, position_bux_interface=True):
+        to_bus_channel = 'smartknx:test:v0:to_bus:'
+        from_bus_channel = 'smartknx:test:v0:from_bus:'
+        self.sub_channel_prefix = to_bus_channel if position_bux_interface else from_bus_channel
+        self.pub_channel_prefix = from_bus_channel if position_bux_interface else to_bus_channel
 
     async def create_con_pool(self):
         self.con_pool = await aioredis.create_redis_pool('redis://localhost')
 
     async def psubscribe(self):
-       channels = await self.con_pool.psubscribe(self.to_bus_channel + "*")
-       self.channel = channels[0]
+        channels = await self.con_pool.psubscribe(self.sub_channel_prefix + "*")
+        self.channel = channels[0]
+
+    def prepare_msg(self, msg):
+        channel = msg[0].decode('utf-8')
+        content = msg[1].decode('utf-8')
+
+        channel_suffix = channel[len(self.sub_channel_prefix):]
+        return channel_suffix, content
 
     async def receive(self, callback):
-       async for msg in self.channel.iter():
-           channel = msg[0].decode('utf-8')
-           content = msg[1].decode('utf-8')
+        async for msg in self.channel.iter():
+            channel, content = self.prepare_msg(msg)
+            callback(channel, content)
 
-           channel_suffix = channel[len(self.to_bus_channel):]
-           callback(channel_suffix, content)
+    async def receive_msg(self):
+        msg = await self.channel.get()
+        return self.prepare_msg(msg)
 
     async def publish(self, channel_suffix, text):
-       await self.con_pool.publish(self.from_bus_channel + channel_suffix, text)
+        await self.con_pool.publish(self.pub_channel_prefix + channel_suffix, text)
 
     async def punsubscribe(self):
-       await self.con_pool.punsubscribe(self.to_bus_channel + "*")
-    
+        await self.con_pool.punsubscribe(self.sub_channel_prefix + "*")
+
     async def initialize(self, callback):
         await self.create_con_pool()
         await self.psubscribe()
         await self.receive(callback)
         await self.punsubscribe()
+
 
 def process_tuple(t):
     print(type(t))
@@ -43,10 +53,11 @@ def process_tuple(t):
     print(t[0])
     print(t[1])
 
+
 async def main():
     rc = RedisConnector()
-    rc.from_bus_channel = "testchannels:"
-    rc.to_bus_channel = rc.from_bus_channel
+    rc.pub_channel_prefix = "testchannels:"
+    rc.sub_channel_prefix = rc.pub_channel_prefix
     await rc.create_con_pool()
     await rc.psubscribe()
     task = asyncio.create_task(rc.receive(process_tuple))
@@ -57,4 +68,3 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
-    
