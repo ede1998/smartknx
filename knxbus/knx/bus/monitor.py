@@ -21,7 +21,6 @@ class KnxBusMonitor(KnxTunnelConnection):
         super(KnxBusMonitor, self).__init__(future, loop=loop)
         self.group_monitor = group_monitor
         self.redis = None
-        self.knx_source_address = '15.15.254'
         self.sequence_counter_incoming = -1
 
     def connection_made(self, transport):
@@ -87,6 +86,7 @@ class KnxBusMonitor(KnxTunnelConnection):
                 if not self.tunnel_established:
                     self.tunnel_established = True
                 self.communication_channel = knx_message.communication_channel
+                self.knx_source_address = knx_message.data_block.get('knx_address')
                 # subscribe to channels
                 self.subscribe_to_redis()
             else:
