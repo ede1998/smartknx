@@ -4,6 +4,7 @@ import json
 
 
 class Type(Enum):
+    UNKOWN = auto()
     B1 = auto()
     B1U3 = auto()
     U8 = auto()
@@ -11,14 +12,16 @@ class Type(Enum):
 
 
 class KNXMessage:
+    group_address_translator = dict()
 
     def __init__(self, group_address, typ):
         super().__init__()
-        assert isinstance(group_address, GroupAddress)
+        assert isinstance(group_address, GroupAddress), "GroupAddress expected, got %s: %s" % (type(group_address).__name__, str(group_address))
         assert isinstance(typ, Type)
         self.group_address = group_address
         self.type = typ
         self.data = None
+        KNXMessage.group_address_translator[str(group_address)] = typ
 
     def __repr__(self):
         return "KNXMessage(group_address=%s, type=%s, data=%s)" % (
@@ -83,8 +86,8 @@ class KNXMessage:
         return json.dumps(self, default=custom_encoder)
 
     @classmethod
-    def unserialize_json(cls, str):
-        o = json.loads(str)
+    def unserialize_json(cls, string):
+        o = json.loads(string)
         addr = map(int, o['group_address'].split('/'))
         addr = GroupAddress(*addr)
         typ = Type[o['type']]
@@ -93,12 +96,19 @@ class KNXMessage:
         return instance
 
     def serialize_redis(self):
-        return str(self.group_address), self.data
+        d = self.data
+        self.convert_data(False)
+        ret = self.data
+        self.data = d
+        return str(self.group_address), ret
 
     @classmethod
     def unserialize_redis(cls, group_address, data, typ):
         assert isinstance(group_address, str)
+        assert isinstance(data, str)
         addr = GroupAddress(*map(int, group_address.split('/')))
         o = KNXMessage(addr, typ)
-        o.data = data
+        o.data = json.loads(data)
+        o.convert_data(True)
         return o
+    
