@@ -1,5 +1,6 @@
 import asyncio
 import websockets
+from profile_loader.knx_message import KNXMessage
 if __name__ == '__main__':
     from pubsub import RedisConnector
 else:
@@ -22,14 +23,17 @@ def handle_redis_message(chan, content):
         # TODO sensible format
         asyncio.create_task(websocket.send([chan, content]))
 
+
 def send_initial_states(websocket):
     for entry in _states.items():
         asyncio.create_task(websocket.send(entry))
+
 
 async def handle_client_message(msg):
     print(msg)
     # TODO send sensible stuff
     await _redis.publish('test', msg)
+
 
 async def ws_handler(websocket, path):
     # Register.

@@ -53,7 +53,7 @@ class BlindOld(Object):
         super().__init__(name)
         self.read_top = KNXMessage(read_top, Type.BOOLEAN)
         self.read_bottom = KNXMessage(read_bottom, Type.BOOLEAN)
-        self.write_direction = KNXMessage(write_direction, Type.BYTE)
+        self.write_direction = KNXMessage(write_direction, Type.BOOLEAN)
         self.write_stop = KNXMessage(write_stop, Type.BOOLEAN)
 
     @classmethod
@@ -70,9 +70,9 @@ class Blind(Object):
 
     def __init__(self, read_position, write_position, write_direction, write_stop, name='Blinds'):
         super().__init__(name)
-        self.read_position = KNXMessage(read_position, Type.BYTE)
-        self.write_position = KNXMessage(write_position, Type.BYTE)
-        self.write_direction = KNXMessage(write_direction, Type.BYTE)
+        self.read_position = KNXMessage(read_position, Type.BYTE1)
+        self.write_position = KNXMessage(write_position, Type.BYTE1)
+        self.write_direction = KNXMessage(write_direction, Type.BOOLEAN)
         self.write_stop = KNXMessage(write_stop, Type.BOOLEAN)
 
     @classmethod
