@@ -14,6 +14,8 @@ class KNXMessage:
 
     def __init__(self, group_address, typ):
         super().__init__()
+        assert isinstance(group_address, GroupAddress)
+        assert isinstance(typ, Type)
         self.group_address = group_address
         self.type = typ
         self.data = None
@@ -49,3 +51,14 @@ class KNXMessage:
         instance = cls(addr, typ)
         instance.data = o['data']
         return instance
+    
+    def serialize_redis(self):
+        return str(self.group_address), self.data
+    
+    @classmethod
+    def unserialize_redis(cls, group_address, data, typ):
+        assert isinstance(group_address, str)
+        addr = GroupAddress(*map(int, group_address.split('/')))
+        o = KNXMessage(addr, typ)
+        o.data = data
+        return o

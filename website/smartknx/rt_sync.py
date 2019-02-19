@@ -30,7 +30,9 @@ def send_initial_states(websocket):
 
 
 async def handle_client_message(msg):
-    print(msg)
+    knxmsg = KNXMessage.unserialize_json(msg)
+    print(knxmsg)
+
     # TODO send sensible stuff
     await _redis.publish('test', msg)
 
