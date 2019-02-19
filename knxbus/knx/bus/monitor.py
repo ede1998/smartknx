@@ -61,6 +61,8 @@ class KnxBusMonitor(KnxTunnelConnection):
                 cemi.extended_control_field.get('address_type')):
             return
         
+        if self.sequence_counter_incoming >= 255:
+            self.sequence_counter_incoming = -1
         if message.sequence_counter <= self.sequence_counter_incoming:
             return
         
@@ -69,7 +71,7 @@ class KnxBusMonitor(KnxTunnelConnection):
         dst_addr = message.parse_knx_group_address(cemi.knx_destination)
         data = apci.apci_data
         
-        asyncio.create_task(self.redis.publish(dst_addr, str([hex(i) for i in data])))
+        asyncio.create_task(self.redis.publish(dst_addr, str(data)))
     
     def datagram_received(self, data, addr):
         knx_message = parse_message(data)

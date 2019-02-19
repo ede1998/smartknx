@@ -17,8 +17,8 @@ class Light(Object):
 
     def __init__(self, write, read, name='Light'):
         super().__init__(name)
-        self.read = KNXMessage(read, Type.BOOLEAN)
-        self.write = KNXMessage(write, Type.BOOLEAN)
+        self.read = KNXMessage(read, Type.B1)
+        self.write = KNXMessage(write, Type.B1)
 
     @classmethod
     def from_yaml(cls, loader, node):
@@ -34,8 +34,8 @@ class Outlet(Object):
 
     def __init__(self, read, write, name='Outlet'):
         super().__init__(name)
-        self.read = KNXMessage(read, Type.BOOLEAN)
-        self.write = KNXMessage(write, Type.BOOLEAN)
+        self.read = KNXMessage(read, Type.B1)
+        self.write = KNXMessage(write, Type.B1)
 
     @classmethod
     def from_yaml(cls, loader, node):
@@ -51,10 +51,10 @@ class BlindOld(Object):
 
     def __init__(self, read_top, read_bottom, write_direction, write_stop, name='Blinds'):
         super().__init__(name)
-        self.read_top = KNXMessage(read_top, Type.BOOLEAN)
-        self.read_bottom = KNXMessage(read_bottom, Type.BOOLEAN)
-        self.write_direction = KNXMessage(write_direction, Type.BOOLEAN)
-        self.write_stop = KNXMessage(write_stop, Type.BOOLEAN)
+        self.read_top = KNXMessage(read_top, Type.B1)
+        self.read_bottom = KNXMessage(read_bottom, Type.B1)
+        self.write_direction = KNXMessage(write_direction, Type.B1)
+        self.write_stop = KNXMessage(write_stop, Type.B1)
 
     @classmethod
     def from_yaml(cls, loader, node):
@@ -70,10 +70,10 @@ class Blind(Object):
 
     def __init__(self, read_position, write_position, write_direction, write_stop, name='Blinds'):
         super().__init__(name)
-        self.read_position = KNXMessage(read_position, Type.BYTE1)
-        self.write_position = KNXMessage(write_position, Type.BYTE1)
-        self.write_direction = KNXMessage(write_direction, Type.BOOLEAN)
-        self.write_stop = KNXMessage(write_stop, Type.BOOLEAN)
+        self.read_position = KNXMessage(read_position, Type.U8)
+        self.write_position = KNXMessage(write_position, Type.U8)
+        self.write_direction = KNXMessage(write_direction, Type.B1)
+        self.write_stop = KNXMessage(write_stop, Type.B1)
 
     @classmethod
     def from_yaml(cls, loader, node):

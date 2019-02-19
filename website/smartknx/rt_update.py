@@ -8,7 +8,7 @@ else:
 
 class WebsocketHandler:
 
-    def  __init__(self, redis):
+    def __init__(self, redis):
         self.redis = redis
 
     async def initialize(self):
@@ -29,7 +29,6 @@ class WebsocketHandler:
             print(msg)
             # TODO save to dict?
             # TODO update websocket
-
 
     async def handler(self, websocket, path):
         consumer_task = asyncio.ensure_future(
