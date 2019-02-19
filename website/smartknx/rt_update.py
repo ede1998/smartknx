@@ -1,12 +1,19 @@
 import asyncio
 import websockets
-from .pubsub import RedisConnector
+if __name__ == '__main__':
+    from pubsub import RedisConnector
+else:
+    from .pubsub import RedisConnector
 
 
 class WebsocketHandler:
 
     def  __init__(self, redis):
         self.redis = redis
+
+    async def initialize(self):
+        await self.redis.create_con_pool()
+        await self.redis.psubscribe()
 
     async def consumer_handler(self, websocket, path):
         async for msg in websocket:
@@ -21,6 +28,7 @@ class WebsocketHandler:
             print(channel)
             print(msg)
             # TODO save to dict?
+            # TODO update websocket
 
 
     async def handler(self, websocket, path):
@@ -42,7 +50,7 @@ def main():
     ws_handler = WebsocketHandler(redis)
     start_server = websockets.serve(ws_handler.handler, 'localhost', 8765)
 
-    asyncio.get_event_loop().run_until_complete(redis.create_con_pool())
+    asyncio.get_event_loop().run_until_complete(ws_handler.initialize())
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
 
