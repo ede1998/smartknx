@@ -18,3 +18,6 @@ class KNXMessage:
     def __repr__(self):
         return "KNXMessage(group_address=%s, type=%s, data=%s)" % (
             self.group_address, self.type, self.data)
+    
+    def __hash__(self):
+        return self.group_address.__hash__()
