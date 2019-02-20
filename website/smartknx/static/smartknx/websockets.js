@@ -2,21 +2,26 @@
 // onmessage:
 // call update on each element with group address x
 
-let chatSocket = new WebSocket(
+"use strict";
+
+let group_states = {}
+
+let knxSocket = new WebSocket(
     'ws://' + window.location.hostname + ":8765")
 
-chatSocket.onmessage = function (e) {
+knxSocket.onmessage = function (e) {
     const msg = JSON.parse(e.data);
     const addr = msg['group_address'];
     const data = msg['data'];
-    const tag = "#address" + addr.replace(/\//g, "-")
-    let elem = document.querySelector(tag);
+    const tag = "address" + addr.replace(/\//g, "-")
+    let elem = document.querySelector("#"+tag);
     if (elem != null)
     {
         elem.update(data);
     }
+    group_states[tag] = data;
 };
 
-chatSocket.onclose = function (e) {
+knxSocket.onclose = function (e) {
     console.error('Chat socket closed unexpectedly');
 };

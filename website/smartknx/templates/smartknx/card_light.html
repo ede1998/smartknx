@@ -11,16 +11,27 @@
         <h4 class="card-text">{{ device.name }}</h4>
     </div>
     <script type="text/javascript">
-       document.querySelector("#{{device.read.group_address|group_address_to_tag}}").update = function (data) {
-                 let img = document.querySelector("#{{device.read.group_address|group_address_to_tag}} img")
-                 if (data == true)
-                 {
-                     img.src = "{% static 'smartknx/light_on.svg' %}"
-                 }
-                 else
-                 {
-                     img.src = "{% static 'smartknx/light_off.svg' %}"
-                 }
-             }
+        const tag_name = "{{device.read.group_address|group_address_to_tag}}";
+        let div_element = document.querySelector("#"+tag_name);
+
+        div_element.update = function (data) {
+            let img = document.querySelector("#" + tag_name + " img")
+            if (data == true) {
+                img.src = "{% static 'smartknx/light_on.svg' %}"
+            }
+            else {
+                img.src = "{% static 'smartknx/light_off.svg' %}"
+            }
+        }
+
+        div_element.onclick = function () {
+            const current_data = group_states[tag_name] || false;
+            msg = { type: "B1" };
+            msg.group_address = "{{device.write.group_address}}";
+            msg.data = !current_data;
+            knxSocket.send(JSON.stringify(msg));
+            group_states[tag_name] = msg.data;
+            div_element.update(msg.data);
+        }
     </script>
 </div>

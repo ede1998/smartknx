@@ -92,7 +92,11 @@ class KNXMessage:
 
     @classmethod
     def unserialize_json(cls, string):
-        o = json.loads(string)
+        try:
+            o = json.loads(string)
+        except json.JSONDecodeError as e:
+            print(e)
+            return None
         addr = map(int, o['group_address'].split('/'))
         addr = GroupAddress(*addr)
         typ = Type[o['type']]

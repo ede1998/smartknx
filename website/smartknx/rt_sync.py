@@ -26,6 +26,8 @@ def send_initial_states(websocket):
 
 async def handle_client_message(msg):
     knxmsg = KNXMessage.unserialize_json(msg)
+    if knxmsg is None:
+        return
     print(knxmsg)
 
     channel, msg = knxmsg.serialize_redis()
