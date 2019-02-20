@@ -1,7 +1,7 @@
 {% load static %}
 {% load smartknx_extra %}
 <div class="card bg-dark text-white" id="{{device.read.group_address|group_address_to_tag}}">
-    <img class="card-img-top img-fluid" src="{% static 'smartknx/light_on.svg' %}" alt="Light" style="max-height:200px">
+    <img class="card-img-top img-fluid" src="{% static 'smartknx/light_off.svg' %}" alt="Light" style="max-height:200px">
     <div class="card-body text-center">
         <h4 class="card-text">{{ device.name }}</h4>
     </div>
@@ -12,12 +12,8 @@
 
         div_element.update = function (data) {
             let img = document.querySelector("#" + tag_name + " img")
-            if (data == true) {
-                img.src = "{% static 'smartknx/light_on.svg' %}"
-            }
-            else {
-                img.src = "{% static 'smartknx/light_off.svg' %}"
-            }
+            img.src = data == true?"{% static 'smartknx/light_on.svg' %}"
+                                  :"{% static 'smartknx/light_off.svg' %}";
         }
 
         div_element.onclick = function () {
