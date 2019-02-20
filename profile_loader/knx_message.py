@@ -21,14 +21,19 @@ class KNXMessage:
         self.group_address = group_address
         self.type = typ
         self.data = None
-        KNXMessage.group_address_translator[str(group_address)] = typ
+        KNXMessage.group_address_translator[str(group_address)] = self
 
     def __repr__(self):
         return "KNXMessage(group_address=%s, type=%s, data=%s)" % (
             self.group_address, self.type, self.data)
-
-    def __hash__(self):
-        return self.group_address.__hash__()
+    
+    @staticmethod
+    def get_group_type(group_address):
+        msg = KNXMessage.group_address_translator.get(str(group_address))
+        if msg is None:
+            return Type.UNKOWN
+        else:
+            return msg.type
 
     def convert_data(self, to_python):
         if to_python:

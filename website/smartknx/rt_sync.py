@@ -2,20 +2,16 @@ import asyncio
 import websockets
 from profile_loader.knx_message import KNXMessage, Type
 from .pubsub import RedisConnector
+import oyaml as yaml
 
 
 _connections = set()
-_states = dict()
 _redis = None
 
 
 def handle_redis_message(chan, content):
-    knxmsg = KNXMessage.unserialize_redis(chan, content, KNXMessage.group_address_translator.get(chan, Type.UNKOWN))
-    
-    print(chan)
-    print(content)
-    # update _states dict for new clients
-    _states[chan] = content
+    # dict with last msgs for new clients is automatically updated
+    knxmsg = KNXMessage.unserialize_redis(chan, content, KNXMessage.get_group_type(chan))
 
     # inform client about state change
     for websocket in _connections:
@@ -23,8 +19,8 @@ def handle_redis_message(chan, content):
 
 
 def send_initial_states(websocket):
-    for entry in _states.items():
-        asyncio.create_task(websocket.send(entry))
+    for entry in KNXMessage.group_address_translator.values():
+        asyncio.create_task(websocket.send(entry.serialize_json()))
 
 
 async def handle_client_message(msg):
@@ -59,7 +55,11 @@ async def redis_handler():
 
 
 async def main():
-    ws_coro = websockets.serve(ws_handler, 'localhost', 8765)
+    with open('../config/network.yaml', 'r') as f:
+        config = yaml.safe_load(f)
+        ip = 'localhost'
+        port = config['ws_port']
+    ws_coro = websockets.serve(ws_handler, ip, port)
     redis_coro = redis_handler()
 
     await asyncio.gather(ws_coro, redis_coro)
