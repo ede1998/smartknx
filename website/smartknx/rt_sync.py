@@ -1,10 +1,7 @@
 import asyncio
 import websockets
 from profile_loader.knx_message import KNXMessage, Type
-if __name__ == '__main__':
-    from pubsub import RedisConnector
-else:
-    from .pubsub import RedisConnector
+from .pubsub import RedisConnector
 
 
 _connections = set()
