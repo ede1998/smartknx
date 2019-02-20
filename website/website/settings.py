@@ -31,7 +31,6 @@ ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
     'smartknx',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,17 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'website.wsgi.application'
-ASGI_APPLICATION = 'website.routing.application'
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
