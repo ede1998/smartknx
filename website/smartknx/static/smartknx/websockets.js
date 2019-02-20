@@ -3,15 +3,18 @@
 // call update on each element with group address x
 
 let chatSocket = new WebSocket(
-    'ws://' + window.location.host +
-    '/ws/update')
+    'ws://' + window.location.hostname + ":8765")
 
 chatSocket.onmessage = function (e) {
     const msg = JSON.parse(e.data);
-    const addr = msg['address'];
+    const addr = msg['group_address'];
     const data = msg['data'];
-    location.reload(true);
-//    document.querySelector('#chat-log').value += (message + '\n');
+    const tag = "#address" + addr.replace(/\//g, "-")
+    let elem = document.querySelector(tag);
+    if (elem != null)
+    {
+        elem.update(data);
+    }
 };
 
 chatSocket.onclose = function (e) {
