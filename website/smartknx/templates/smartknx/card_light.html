@@ -1,16 +1,12 @@
 {% load static %}
 {% load smartknx_extra %}
 <div class="card bg-dark text-white" id="{{device.read.group_address|group_address_to_tag}}">
-    <img class="card-img-top img-fluid" src="
-        {% if device.read.data is True %}
-            {% static 'smartknx/light_on.svg' %}
-        {% else %}
-            {% static 'smartknx/light_off.svg' %}
-        {% endif %}" alt="Light" style="max-height:200px">
+    <img class="card-img-top img-fluid" src="{% static 'smartknx/light_on.svg' %}" alt="Light" style="max-height:200px">
     <div class="card-body text-center">
         <h4 class="card-text">{{ device.name }}</h4>
     </div>
     <script type="text/javascript">
+    {
         const tag_name = "{{device.read.group_address|group_address_to_tag}}";
         let div_element = document.querySelector("#"+tag_name);
 
@@ -33,5 +29,6 @@
             group_states[tag_name] = msg.data;
             div_element.update(msg.data);
         }
+    }
     </script>
 </div>

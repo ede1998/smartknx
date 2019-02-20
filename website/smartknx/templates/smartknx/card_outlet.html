@@ -1,8 +1,34 @@
 {% load static %}
-<div class="card bg-dark text-white">
-    <img class="card-img-top img-fluid" src="{% static 'smartknx/outlet_on.svg' %}" alt="Card image"
-        style="max-height:200px">
+{% load smartknx_extra %}
+<div class="card bg-dark text-white" id="{{device.read.group_address|group_address_to_tag}}">
+    <img class="card-img-top img-fluid" src="{% static 'smartknx/outlet_on.svg' %}" alt="Light" style="max-height:200px">
     <div class="card-body text-center">
         <h4 class="card-text">{{ device.name }}</h4>
     </div>
+    <script type="text/javascript">
+    {
+        const tag_name = "{{device.read.group_address|group_address_to_tag}}";
+        let div_element = document.querySelector("#"+tag_name);
+
+        div_element.update = function (data) {
+            let img = document.querySelector("#" + tag_name + " img")
+            if (data == true) {
+                img.src = "{% static 'smartknx/outlet_on.svg' %}"
+            }
+            else {
+                img.src = "{% static 'smartknx/outlet_off.svg' %}"
+            }
+        }
+
+        div_element.onclick = function () {
+            const current_data = group_states[tag_name] || false;
+            msg = { type: "B1" };
+            msg.group_address = "{{device.write.group_address}}";
+            msg.data = !current_data;
+            knxSocket.send(JSON.stringify(msg));
+            group_states[tag_name] = msg.data;
+            div_element.update(msg.data);
+        }
+    }
+    </script>
 </div>
