@@ -1,3 +1,3 @@
 knx_gateway: 127.0.0.1
 knx_port: 3671
-ws_port: 8765
+ws_host: localhost

@@ -3,11 +3,11 @@ import websockets
 from profile_loader.knx_message import KNXMessage, Type
 from .pubsub import RedisConnector
 import oyaml as yaml
-
+from threading import Thread
 
 _connections = set()
 _redis = None
-
+_loop = None
 
 def handle_redis_message(chan, content):
     # dict with last msgs for new clients is automatically updated
@@ -20,7 +20,8 @@ def handle_redis_message(chan, content):
 
 def send_initial_states(websocket):
     for entry in KNXMessage.group_address_translator.values():
-        asyncio.create_task(websocket.send(entry.serialize_json()))
+        if not entry.data is None:
+            asyncio.create_task(websocket.send(entry.serialize_json()))
 
 
 async def handle_client_message(msg):
@@ -55,15 +56,20 @@ async def redis_handler():
 
 
 async def main():
+    global _loop
+    _loop = asyncio.get_running_loop()
     with open('../config/network.yaml', 'r') as f:
         config = yaml.safe_load(f)
-        ip = 'localhost'
-        port = config['ws_port']
+        ip = config['ws_host']
+        port = 8765
     ws_coro = websockets.serve(ws_handler, ip, port)
     redis_coro = redis_handler()
 
     await asyncio.gather(ws_coro, redis_coro)
 
+def run_in_thread():
+    t = Thread(target=asyncio.run, args=[main()])
+    t.start()
 
 if __name__ == '__main__':
     asyncio.run(main())
