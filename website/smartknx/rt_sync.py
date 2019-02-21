@@ -64,10 +64,19 @@ async def main():
         config = yaml.safe_load(f)
         ip = config['ws_host']
         port = 8765
+    
+    # if we don't get a connection to redis, websockets would also return immediately
+    # so we need a helper coro, that keeps the loop running
+    async def waiter():
+        while True:
+            await asyncio.sleep(100)
+
     ws_coro = websockets.serve(ws_handler, ip, port)
     redis_coro = redis_handler()
+    waiter_coro = waiter()
 
-    await asyncio.gather(ws_coro, redis_coro)
+
+    await asyncio.gather(ws_coro, redis_coro, waiter_coro)
 
 def run_in_thread():
     t = Thread(target=asyncio.run, args=[main()])

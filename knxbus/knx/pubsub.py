@@ -9,9 +9,14 @@ class RedisConnector:
         from_bus_channel = 'smartknx:test:v0:from_bus:'
         self.sub_channel_prefix = to_bus_channel if position_bux_interface else from_bus_channel
         self.pub_channel_prefix = from_bus_channel if position_bux_interface else to_bus_channel
+        self.is_connected = False
 
     async def create_con_pool(self):
-        self.con_pool = await aioredis.create_redis_pool('redis://localhost')
+        try:
+            self.con_pool = await aioredis.create_redis_pool('redis://localhost')
+            self.is_connected = True
+        except OSError as e:
+            print(e)
 
     async def psubscribe(self):
         channels = await self.con_pool.psubscribe(self.sub_channel_prefix + "*")
@@ -34,6 +39,8 @@ class RedisConnector:
         return self.prepare_msg(msg)
 
     async def publish(self, channel_suffix, text):
+        if not self.is_connected:
+            return False
         await self.con_pool.publish(self.pub_channel_prefix + channel_suffix, text)
 
     async def punsubscribe(self):
@@ -41,6 +48,9 @@ class RedisConnector:
 
     async def initialize(self, callback):
         await self.create_con_pool()
+        return
+        if not self.is_connected:
+            return False
         await self.psubscribe()
         await self.receive(callback)
         await self.punsubscribe()
