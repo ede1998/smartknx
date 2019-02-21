@@ -48,7 +48,6 @@ class RedisConnector:
 
     async def initialize(self, callback):
         await self.create_con_pool()
-        return
         if not self.is_connected:
             return False
         await self.psubscribe()
