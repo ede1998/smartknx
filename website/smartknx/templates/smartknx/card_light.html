@@ -1,8 +1,10 @@
 {% load static %}
 {% load smartknx_extra %}
 <div class="card bg-dark text-white" id="{{device.read.group_address|group_address_to_tag}}">
-    <img class="card-img-top img-fluid" src="{% static 'smartknx/light_off.svg' %}" alt="Light" style="max-height:200px">
-    <div class="card-body text-center">
+    <div class="card-body d-flex justify-content-center">
+      <img src="{% static 'smartknx/light_off.svg' %}" alt="Light" style="max-height:25vh">
+    </div>
+    <div class="card-footer text-center">
         <h4 class="card-text">{{ device.name }}</h4>
     </div>
     <script type="text/javascript">
@@ -11,8 +13,8 @@
         let div_element = document.querySelector("#"+tag_name);
 
         div_element.update = function (data) {
-            let img = document.querySelector("#" + tag_name + " img")
-            img.src = data == true?"{% static 'smartknx/light_on.svg' %}"
+            let img = document.querySelector("#" + tag_name + " div img")
+            img.src = data === true?"{% static 'smartknx/light_on.svg' %}"
                                   :"{% static 'smartknx/light_off.svg' %}";
         }
 
