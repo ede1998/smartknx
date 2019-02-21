@@ -1,6 +1,7 @@
 
 function change_rangeHighlights(slider, until) {
     slider.setAttribute("rangeHighlights", [{ "start": 0, "end": 43 }]);
+    let sliderTrack = slider.getElement().querySelector(".slider-track");
     rangeHighlightElements = [];
     const rangeHighlightsOpts = [{ "start": 0, "end": 43 }];
     if (Array.isArray(rangeHighlightsOpts) && rangeHighlightsOpts.length > 0) {
