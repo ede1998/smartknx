@@ -12,14 +12,13 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <link rel="icon" href="{% static 'smartknx/favicon.ico' %}" type="image/ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/css/bootstrap-slider.min.css">
     <script src="{% static 'smartknx/websockets.js' %}" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/css/bootstrap-slider.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.min.js"></script>
-    <style type="text/css">
-    .slider .tooltip.in {
-          opacity: 1;
-      }
-    </style>
+    <link rel="stylesheet" href="{% static 'smartknx/slider_support.css' %}">
+    <script src="{% static 'smartknx/slider_support.js' %}"></script>
+
     <title>SmartKNX - {{ all.name }}</title>
 </head>
 

@@ -1,0 +1,7 @@
+.slider .tooltip.in {
+    opacity: 1;
+}
+
+.slider-rangeHighlight {
+    background: #ffc107;
+}

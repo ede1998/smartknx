@@ -1,16 +1,97 @@
 {% load static %}
-<div class="card bg-dark text-white pt-3">
+{% load smartknx_extra %}
+{% with group_tag=device.read_position.group_address|group_address_to_tag %}
+<div class="card bg-dark text-white" id="{{ group_tag }}">
     <div class="card-body d-flex flex-column justify-content-center">
       <img class="mb-3" src="{% static 'smartknx/windowblind_middle.svg' %}" alt="Card image" style="max-height:25vh">
-      <input id="ex4" type="text" style="width:100%" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="30" />
-      <script type="text/javascript">{let slider = new Slider("#ex4");}</script>
+      <input class="move-position" type="text" style="width:100%" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="30" />
       <div class="btn-group btn-group-lg btn-block mt-3">
-        <button type="button" class="btn btn-dark text-white">▲</button>
-        <button type="button" class="btn btn-dark text-white">⯀</button>
-        <button type="button" class="btn btn-dark text-white">▼</button>
+        <button type="button" class="btn btn-dark text-white move-up">▲</button>
+        <button type="button" class="btn btn-dark text-white move-stop">■</button>
+        <button type="button" class="btn btn-dark text-white move-down">▼</button>
       </div>
     </div>
     <div class="card-footer text-center">
       <h4 class="card-text">{{ device.name }}</h4>
     </div>
+    <style type="text/css">
+     .slider-rangeHighlight {
+        background: #ffc107;
+     }
+    </style>
+    <script type="text/javascript">
+    {
+        let slider = new Slider("#{{group_tag}} .move-position");
+        let div_element = document.querySelector("#{{group_tag}}");
+
+        let sliderTrack = document.querySelector("#{{group_tag}} .slider-track")
+        slider.setAttribute("rangeHighlights", [{ "start": 0, "end": 43}]);
+        rangeHighlightElements = [];
+                        const rangeHighlightsOpts = [{ "start": 0, "end": 43}];
+                        if (Array.isArray(rangeHighlightsOpts) && rangeHighlightsOpts.length > 0) {
+                        for (let j = 0; j < rangeHighlightsOpts.length; j++) {
+                               let rangeHighlightElement = document.createElement("div");
+                               const customClassString = rangeHighlightsOpts[j].class || "";
+                               rangeHighlightElement.className = `slider-rangeHighlight slider-selection ${customClassString}`;
+                               slider.rangeHighlightElements.push(rangeHighlightElement);
+                               sliderTrack.appendChild(rangeHighlightElement);
+                        }
+                        }
+        if (slider.rangeHighlightElements.length > 0 && Array.isArray(slider.options.rangeHighlights) && slider.options.rangeHighlights.length > 0) {
+					for (let i = 0; i < slider.options.rangeHighlights.length; i++) {
+						var startPercent = slider._toPercentage(slider.options.rangeHighlights[i].start);
+						var endPercent = slider._toPercentage(slider.options.rangeHighlights[i].end);
+
+						if (slider.options.reversed) {
+							var sp = 100-endPercent;
+							endPercent = 100-startPercent;
+							startPercent = sp;
+						}
+
+						var currentRange = slider._createHighlightRange(startPercent, endPercent);
+
+						if (currentRange) {
+							if (slider.options.orientation === 'vertical') {
+								slider.rangeHighlightElements[i].style.top = `${currentRange.start}%`;
+								slider.rangeHighlightElements[i].style.height = `${currentRange.size}%`;
+							} else {
+								if(slider.options.rtl){
+									slider.rangeHighlightElements[i].style.right = `${currentRange.start}%`;
+								} else {
+									slider.rangeHighlightElements[i].style.left = `${currentRange.start}%`;
+								}
+								slider.rangeHighlightElements[i].style.width = `${currentRange.size}%`;
+							}
+						} else {
+							slider.rangeHighlightElements[i].style.display = "none";
+						}
+					}
+}
+        div_element.update = function (data) {
+            let img = document.querySelector("#" + tag_name + " div img")
+            img.src = ""; //data === true?"{% static 'smartknx/light_on.svg' %}" :"{% static 'smartknx/light_off.svg' %}";
+            slider.setAttribute("rangeHighlights", [{ "start": 2, "end": 5, "class": "TODO"},{ "start": 5, "end": 80, "class": "TODO"}]);
+        }
+
+        slider.on("slide", function(sliderValue) {
+            document.querySelector("#{{group_tag}} .move-position").textContent = sliderValue;
+        });
+
+        div_element.querySelector(".move-up").onclick = function () {
+            msg = { type: "B1", group_address:"{{device.write_direction.group_address}}", data: true};
+            knxSocket.send(JSON.stringify(msg));
+        }
+
+        div_element.querySelector(".move-stop").onclick = function () {
+            msg = { type: "B1", group_address:"{{device.write_stop.group_address}}", data: true};
+            knxSocket.send(JSON.stringify(msg));
+        }
+
+        div_element.querySelector(".move-down").onclick = function () {
+            msg = { type: "B1", group_address:"{{device.write_direction.group_address}}", data: false};
+            knxSocket.send(JSON.stringify(msg));
+        }
+    }
+    </script>
 </div>
+{% endwith %}
