@@ -16,16 +16,15 @@
     </div>
     <script type="text/javascript">
     {
-        let slider = new Slider("#{{group_tag}} .move-position");
+        let slider = create_slider("#{{group_tag}} .move-position");
         let div_element = document.querySelector("#{{group_tag}}");
 
-        change_rangeHighlights(slider, null);
 
 
         div_element.update = function (data) {
             let img = document.querySelector("#" + tag_name + " div img")
             img.src = ""; //data === true?"{% static 'smartknx/light_on.svg' %}" :"{% static 'smartknx/light_off.svg' %}";
-            slider.setAttribute("rangeHighlights", [{ "start": 2, "end": 5, "class": "TODO"},{ "start": 5, "end": 80, "class": "TODO"}]);
+            change_rangeHighlights(slider, 14);
         }
 
         slider.on("slide", function(sliderValue) {

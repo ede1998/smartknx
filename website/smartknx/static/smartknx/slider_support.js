@@ -1,18 +1,14 @@
 
-function change_rangeHighlights(slider, until) {
-    slider.setAttribute("rangeHighlights", [{ "start": 0, "end": 43 }]);
-    let sliderTrack = slider.getElement().querySelector(".slider-track");
-    rangeHighlightElements = [];
-    const rangeHighlightsOpts = [{ "start": 0, "end": 43 }];
-    if (Array.isArray(rangeHighlightsOpts) && rangeHighlightsOpts.length > 0) {
-        for (let j = 0; j < rangeHighlightsOpts.length; j++) {
-            let rangeHighlightElement = document.createElement("div");
-            const customClassString = rangeHighlightsOpts[j].class || "";
-            rangeHighlightElement.className = `slider-rangeHighlight slider-selection ${customClassString}`;
-            slider.rangeHighlightElements.push(rangeHighlightElement);
-            sliderTrack.appendChild(rangeHighlightElement);
-        }
-    }
+function create_slider(element) {
+    let slider = new Slider(element, { rangeHighlights: [{ "start": 0, "end": 43 }] });
+
+    return slider;
+}
+
+
+function change_rangeHighlights(slider, position) {
+    slider.setAttribute("rangeHighlights", [{ "start": 0, "end": position }]);
+
     if (slider.rangeHighlightElements.length > 0 && Array.isArray(slider.options.rangeHighlights) && slider.options.rangeHighlights.length > 0) {
         for (let i = 0; i < slider.options.rangeHighlights.length; i++) {
             var startPercent = slider._toPercentage(slider.options.rangeHighlights[i].start);
