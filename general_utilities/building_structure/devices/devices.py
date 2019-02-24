@@ -4,7 +4,7 @@ from ...communication.converters import *
 
 class Light(Device):
     yaml_tag = u'!Light'
-    template_name = 'card_light'
+    template = 'smartknx/card_light.html'
 
     def __init__(self, write, read, name='Light'):
         super().__init__(name)
@@ -18,7 +18,7 @@ class Light(Device):
 
 class Outlet(Device):
     yaml_tag = u'!Outlet'
-    template_name = 'card_outlet'
+    template = 'smartknx/card_outlet.html'
 
     def __init__(self, read, write, name='Outlet'):
         super().__init__(name)
@@ -32,7 +32,7 @@ class Outlet(Device):
 
 class BlindOld(Device):
     yaml_tag = u'!BlindOld'
-    template_name = 'card_blindold'
+    template = 'smartknx/card_blind_old.html'
 
     def __init__(self, read_top, read_bottom, write_direction, write_stop, name='Blinds'):
         super().__init__(name)
@@ -52,7 +52,7 @@ class BlindOld(Device):
 
 class Blind(Device):
     yaml_tag = u'!Blind'
-    template_name = 'card_blind'
+    template = 'smartknx/card_blind.html'
 
     def __init__(self, read_position, write_position, write_direction, write_stop, name='Blinds'):
         super().__init__(name)

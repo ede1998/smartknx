@@ -3,15 +3,7 @@
 {% block content %}
 <div class="card-deck">
   {% for device in current.children %}
-  {% if device|classname == "Light" %}
-  {% include 'smartknx/card_light.html' with device=device only %}
-  {% elif device|classname == "Outlet" %}
-  {% include 'smartknx/card_outlet.html' with device=device only %}
-  {% elif device|classname == "BlindOld" %}
-  {% include 'smartknx/card_blind_old.html' with device=device only %}
-  {% elif device|classname == "Blind" %}
-  {% include 'smartknx/card_blind.html' with device=device only %}
-  {% endif %}
+  {% include device.template with device=device only %}
   {% endfor %}
 </div>
 {% endblock %}

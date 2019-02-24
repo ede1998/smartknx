@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 import os
-from . import rt_sync
+from general_utilities.communication import rt_sync
 
 
 class SmartknxConfig(AppConfig):
