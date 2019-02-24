@@ -1,4 +1,5 @@
 import oyaml as yaml
+import json
 
 
 class BaseConverter:
@@ -20,10 +21,31 @@ class BaseConverter:
 
 from . import converters
 
-class ConverterFactory:
+class ConverterManager:
     def __init__(self, config_file_name):
         self.converters = dict()
         self._load_config(config_file_name)
+    
+    def serialize_json(self, group_address):
+        json_dict = self.converters[group_address].data_json
+        json_dict['group_address'] = group_address
+        return json.dumps(json_dict)
+    
+    def unserialize_json(self, msg):
+        json_dict = json.loads(msg)
+        group_address = json_dict.pop('group_address')
+        self.converters[group_address].data_json = json_dict
+        return group_address, self.converters[group_address]
+
+    def serialize_binary(self, group_address):
+        return self.converters[group_address].data_binary
+    
+    def unserialize_binary(self, group_address, data):
+        # redis returns a string to us, knxmap sent out an array
+        assert(isinstance(data, str))
+        data = json.loads(data)
+        self.converters[group_address].data_binary = data
+        return group_address, self.converters[group_address]
 
     def _load_config(self, yaml_file):
         with open(yaml_file, 'r') as file:

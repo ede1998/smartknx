@@ -1,6 +1,6 @@
 import asyncio
 import websockets
-from profile_loader.knx_message import KNXMessage, Type
+from .converters import *
 from .pubsub import RedisConnector
 import oyaml as yaml
 from threading import Thread
@@ -10,29 +10,33 @@ _redis = None
 _loop = None
 
 def handle_redis_message(chan, content):
-    # dict with last msgs for new clients is automatically updated
-    knxmsg = KNXMessage.unserialize_redis(chan, content, KNXMessage.get_group_type(chan))
+    try:
+        # set received data
+        ConverterManager.unserialize_binary(chan, content)
+    except KeyError:
+        return
 
-    # inform client about state change
+    json_msg = ConverterManager.serialize_json(chan)
+
+    # inform clients about state change
     for websocket in _connections:
-        asyncio.create_task(websocket.send(knxmsg.serialize_json()))
+        asyncio.create_task(websocket.send(json_msg))
 
 
 def send_initial_states(websocket):
-    for entry in KNXMessage.group_address_translator.values():
-        if not entry.data is None:
-            asyncio.create_task(websocket.send(entry.serialize_json()))
+    for address in ConverterManager.converters.keys():
+        asyncio.create_task(websocket.send(ConverterManager.serialize_json(address)))
 
 
 async def handle_client_message(msg):
-    knxmsg = KNXMessage.unserialize_json(msg)
-    if knxmsg is None:
+    try:
+        group_address, converter = ConverterManager.unserialize_json(msg)
+    except KeyError:
         return
-    print(knxmsg)
+        
+    msg = ConverterManager.serialize_binary(group_address)
 
-    channel, msg = knxmsg.serialize_redis()
-
-    await _redis.publish(channel, str(msg))
+    await _redis.publish(group_address, str(msg))
 
 
 async def ws_handler(websocket, path):

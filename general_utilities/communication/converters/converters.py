@@ -27,21 +27,21 @@ class B1Converter(BaseConverter):
         'DPT_ShutterBlinds_Mode',
     ]
 
+    def __init__(self):
+        super().__init__()
+        self.data = False
+
     def write_binary(self, data):
-        self._data_binary = data
-        self._data_json = bool(data)
-        self.data = bool(data)
+        self.data = bool(data[-1])
 
     def read_binary(self):
-        return self._data_binary
+        return int(self.data)
 
     def write_json(self, data):
-        self._data_json = data
-        self._data_binary = int(data)
-        self.data = data
+        self.data = data['data']
 
     def read_json(self):
-        return self._data_json
+        return {'data': self.data}
 
 
 class U8Converter(BaseConverter):
@@ -52,18 +52,18 @@ class U8Converter(BaseConverter):
         'DPT_DecimalFactor',
     ]
 
+    def __init__(self):
+        super().__init__()
+        self.data = 0
+
     def write_binary(self, data):
-        self._data_binary = data
-        self._data_json = data[0] & 0xFF
-        self.data = self._data_json
+        self.data = data[-1] & 0xFF
 
     def read_binary(self):
-        return self._data_binary
+        return self.data
 
     def write_json(self, data):
-        self._data_json = data
-        self._data_binary = data
-        self.data = data
+        self.data = data['data']
 
     def read_json(self):
-        return self._data_json
+        return {'data': self.data}

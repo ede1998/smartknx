@@ -2,7 +2,7 @@ import logging
 import codecs
 import functools
 import asyncio
-from knx.pubsub import RedisConnector
+from ..general_utilities.communication.pubsub import RedisConnector
 import sys
 
 from knx.bus.tunnel import KnxTunnelConnection
