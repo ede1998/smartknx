@@ -47,6 +47,19 @@ class ConverterManager:
         self.converters[group_address].data_binary = data
         return group_address, self.converters[group_address]
 
+    def get_converter(self, group_address, datapoint_type=None):
+       try:
+            converter = self.converters[group_address]
+       except KeyError as e:
+            raise RuntimeError('Group address %s does not exist. Please add it to your configuration file.' % (
+                group_address)) from e
+       else:
+            if not datapoint_type is None:
+                if not datapoint_type in converter.datapoint_types:
+                    raise RuntimeError('Datapoint Type mismatch: %s required, but got %s' % (
+                        datapoint_type, converter.datapoint_types))
+            return converter
+
     def _load_config(self, yaml_file):
         with open(yaml_file, 'r') as file:
             config = yaml.safe_load(file)

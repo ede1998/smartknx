@@ -1,5 +1,6 @@
-13/1/0: DPT_Switch
-13/1/1: DPT_Switch
-13/2/0: DPT_UpDown
-13/2/1: DPT_Start
-13/2/2: DPT_Scaling
+1/1/0: DPT_Switch
+1/1/1: DPT_Switch
+3/2/0: DPT_UpDown
+3/2/1: DPT_Start
+3/2/2: DPT_Scaling
+3/2/3: DPT_Scaling

@@ -1,0 +1,17 @@
+project: the project name
+floors: # different floors of this building
+  - name: first floor
+    url: ff # url is required
+    rooms:
+      - name: kitchen
+        url: test
+        devices:
+          - Light:
+              name: Sink
+              read: 1/1/0 # address to check if lamp is on
+              write: 1/1/1 # address to toggle lamp on/off
+          - Blind:
+              write_direction: 3/2/0
+              write_position: 3/2/2
+              read_position: 3/2/3
+              write_stop: 3/2/1

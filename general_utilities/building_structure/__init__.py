@@ -1,6 +1,5 @@
 from .container import *
-from .objects import *
-from .group_address import *
+from .devices import *
 import oyaml as yaml
 
 def load(path):
