@@ -14,12 +14,12 @@
 
         div_element.update = function (data) {
             let img = document.querySelector("#" + tag_name + " div img")
-            img.src = data === true?"{% static 'smartknx/outlet_on.svg' %}"
+            img.src = data.data === true?"{% static 'smartknx/outlet_on.svg' %}"
                                    :"{% static 'smartknx/outlet_off.svg' %}";
         }
 
         div_element.onclick = function () {
-            const current_data = group_states[tag_name] || false;
+            const current_data = group_states[tag_name].data || false;
             const msg = {group_address: "{{device.write.group_address}}", data: !current_data};
             knxSocket.send(JSON.stringify(msg));
             group_states[tag_name] = msg.data;

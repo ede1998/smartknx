@@ -10,16 +10,17 @@ let knxSocket = new WebSocket(
     'ws://' + window.location.hostname + ":8765")
 
 knxSocket.onmessage = function (e) {
-    const msg = JSON.parse(e.data);
+    let msg = JSON.parse(e.data);
     const addr = msg['group_address'];
-    const data = msg['data'];
+    delete msg.group_address;
+
     const tag = "address" + addr.replace(/\//g, "-")
     let elem = document.querySelector("#"+tag);
     if (elem != null)
     {
-        elem.update(data);
+        elem.update(msg);
     }
-    group_states[tag] = data;
+    group_states[tag] = msg;
 };
 
 knxSocket.onclose = function (e) {

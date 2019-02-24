@@ -94,8 +94,8 @@ class B5Converter(BaseConverter):
 
     def write_binary(self, data):
         data = data[-1] & 0x1F
-        self.data_position = data & 0b11
-        self.data_mode = (data & 0b111) >> 3
+        self.data_position = B5Converter.Position(data & 0b11)
+        self.data_mode = B5Converter.OperatingMode((data & 0b111) >> 3)
 
 
     def read_binary(self):

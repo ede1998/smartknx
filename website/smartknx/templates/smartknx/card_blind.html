@@ -23,12 +23,12 @@
 
         div_element.update = function (data) {
             let img = document.querySelector("#{{group_tag}} div img")
-            img.src = (data > 95)?
+            img.src = (data.data > 95)?
                         "{% static 'smartknx/windowblind_up.svg' %}":
-                        (data > 5)?
+                        (data.data > 5)?
                               "{% static 'smartknx/windowblind_middle.svg' %}":
                               "{% static 'smartknx/windowblind_down.svg' %}";
-            change_rangeHighlights(slider, data);
+            change_rangeHighlights(slider, data.data);
         }
 
         slider.on("slide", function(sliderValue) {
