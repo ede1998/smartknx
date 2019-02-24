@@ -134,3 +134,4 @@ killpacket.bin
 # config files
 layout.yaml
 network.yaml
+group-address-types.yaml

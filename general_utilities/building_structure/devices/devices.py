@@ -1,5 +1,4 @@
-from .core import Device
-from ...communication.converters import *
+from .core import Device, get_group_address_converter
 
 
 class Light(Device):
@@ -8,8 +7,8 @@ class Light(Device):
 
     def __init__(self, write, read, name='Light'):
         super().__init__(name)
-        self.read = ConverterManager.get_converter(read, 'DPT_Switch')
-        self.write = ConverterManager.get_converter(write, 'DPT_Switch')
+        self.read = get_group_address_converter(read, 'DPT_Switch')
+        self.write = get_group_address_converter(write, 'DPT_Switch')
 
     def __repr__(self):
         return "%s(name=%r, read=%r, write=%r)" % (
@@ -22,8 +21,8 @@ class Outlet(Device):
 
     def __init__(self, read, write, name='Outlet'):
         super().__init__(name)
-        self.read = ConverterManager.get_converter(read, 'DPT_Switch')
-        self.write = ConverterManager.get_converter(write, 'DPT_Switch')
+        self.read = get_group_address_converter(read, 'DPT_Switch')
+        self.write = get_group_address_converter(write, 'DPT_Switch')
 
     def __repr__(self):
         return "%s(name=%r, read=%r, write=%r)" % (
@@ -36,13 +35,10 @@ class BlindOld(Device):
 
     def __init__(self, read_top, read_bottom, write_direction, write_stop, name='Blinds'):
         super().__init__(name)
-        self.read_top = ConverterManager.get_converter(read_top, 'DPT_Bool')
-        self.read_bottom = ConverterManager.get_converter(
-            read_bottom, 'DPT_Bool')
-        self.write_direction = ConverterManager.get_converter(
-            write_direction, 'DPT_Switch')
-        self.write_stop = ConverterManager.get_converter(
-            write_stop, 'DPT_Start')
+        self.read_top = get_group_address_converter(read_top, 'DPT_Bool')
+        self.read_bottom = get_group_address_converter(read_bottom, 'DPT_Bool')
+        self.write_direction = get_group_address_converter(write_direction, 'DPT_Switch')
+        self.write_stop = get_group_address_converter(write_stop, 'DPT_Start')
 
 
 #class GarageDoor(BlindOld):
@@ -56,9 +52,6 @@ class Blind(Device):
 
     def __init__(self, read_position, write_position, write_direction, write_stop, name='Blinds'):
         super().__init__(name)
-        self.read_position = ConverterManager.get_converter(
-            read_position, 'DPT_Scaling')
-        self.write_direction = ConverterManager.get_converter(
-            write_direction, 'DPT_Switch')
-        self.write_stop = ConverterManager.get_converter(
-            write_stop, 'DPT_Start')
+        self.read_position = get_group_address_converter(read_position, 'DPT_Scaling')
+        self.write_direction = get_group_address_converter(write_direction, 'DPT_Switch')
+        self.write_stop = get_group_address_converter(write_stop, 'DPT_Start')

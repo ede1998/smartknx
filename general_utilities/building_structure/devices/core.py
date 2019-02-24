@@ -1,5 +1,25 @@
 import itertools
 import oyaml as yaml  # make sure order in yaml file is preserved
+from ...communication.converters import *
+
+
+def get_converter(group_address, datapoint_type=None):
+   try:
+        converter = ConverterManager.converters[group_address]
+   except KeyError as e:
+        raise RuntimeError('Group address %s does not exist. Please add it to your configuration file.' % (
+            group_address)) from e
+   else:
+        if not datapoint_type is None:
+            if not datapoint_type in converter.datapoint_types:
+                raise RuntimeError('Datapoint Type mismatch: %s required, but got %s' % (
+                    datapoint_type, converter.datapoint_types))
+        return converter
+
+
+def get_group_address_converter(group_address, datapoint_type):
+    converter = get_converter(group_address, datapoint_type)
+    return {'group_address': group_address, 'converter': converter}
 
 
 class Device(yaml.YAMLObject):

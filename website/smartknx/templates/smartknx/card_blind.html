@@ -22,28 +22,28 @@
 
 
         div_element.update = function (data) {
-            let img = document.querySelector("#" + tag_name + " div img")
+            let img = document.querySelector("#{{group_tag}} div img")
             img.src = ""; //data === true?"{% static 'smartknx/light_on.svg' %}" :"{% static 'smartknx/light_off.svg' %}";
             change_rangeHighlights(slider, data);
         }
 
         slider.on("slide", function(sliderValue) {
-            msg = { type: "U8", group_address:"{{device.write_position.group_address}}", data: sliderValue};
+            const msg = { group_address:"{{device.write_position.group_address}}", data: sliderValue};
             knxSocket.send(JSON.stringify(msg));
         });
 
         div_element.querySelector(".move-up").onclick = function () {
-            msg = { type: "B1", group_address:"{{device.write_direction.group_address}}", data: false};
+            const msg = { group_address:"{{device.write_direction.group_address}}", data: false};
             knxSocket.send(JSON.stringify(msg));
         }
 
         div_element.querySelector(".move-stop").onclick = function () {
-            msg = { type: "B1", group_address:"{{device.write_stop.group_address}}", data: false};
+            const msg = { group_address:"{{device.write_stop.group_address}}", data: false};
             knxSocket.send(JSON.stringify(msg));
         }
 
         div_element.querySelector(".move-down").onclick = function () {
-            msg = { type: "B1", group_address:"{{device.write_direction.group_address}}", data: true};
+            const msg = { group_address:"{{device.write_direction.group_address}}", data: true};
             knxSocket.send(JSON.stringify(msg));
         }
     }
