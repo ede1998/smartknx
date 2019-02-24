@@ -1,6 +1,12 @@
 
-function create_slider(element) {
+function create_rangeHighlight_slider(element) {
     let slider = new Slider(element, { rangeHighlights: [{ "start": 0, "end": 43 }] });
+
+    return slider;
+}
+
+function create_slider(element) {
+    let slider = new Slider(element);
 
     return slider;
 }

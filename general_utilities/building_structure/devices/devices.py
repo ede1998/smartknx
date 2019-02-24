@@ -33,10 +33,10 @@ class BlindOld(Device):
     yaml_tag = u'!BlindOld'
     template = 'smartknx/card_blind_old.html'
 
-    def __init__(self, read_top, read_bottom, write_direction, write_stop, name='Blinds'):
+    def __init__(self, read_position, write_position, write_direction, write_stop, name='Blinds'):
         super().__init__(name)
-        self.read_top = get_group_address_converter(read_top, 'DPT_Bool')
-        self.read_bottom = get_group_address_converter(read_bottom, 'DPT_Bool')
+        self.read_position = get_group_address_converter(read_position, 'DPT_Custom_HagerStatus')
+        self.write_position = get_group_address_converter(write_position, 'DPT_Scaling')
         self.write_direction = get_group_address_converter(write_direction, 'DPT_Switch')
         self.write_stop = get_group_address_converter(write_stop, 'DPT_Start')
 

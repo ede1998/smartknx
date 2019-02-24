@@ -16,14 +16,18 @@
     </div>
     <script type="text/javascript">
     {
-        let slider = create_slider("#{{group_tag}} .move-position");
+        let slider = create_rangeHighlight_slider("#{{group_tag}} .move-position");
         let div_element = document.querySelector("#{{group_tag}}");
 
 
 
         div_element.update = function (data) {
             let img = document.querySelector("#{{group_tag}} div img")
-            img.src = ""; //data === true?"{% static 'smartknx/light_on.svg' %}" :"{% static 'smartknx/light_off.svg' %}";
+            img.src = (data > 95)?
+                        "{% static 'smartknx/windowblind_up.svg' %}":
+                        (data > 5)?
+                              "{% static 'smartknx/windowblind_middle.svg' %}":
+                              "{% static 'smartknx/windowblind_down.svg' %}";
             change_rangeHighlights(slider, data);
         }
 
