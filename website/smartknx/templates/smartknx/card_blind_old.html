@@ -23,7 +23,7 @@
 
         div_element.update = function (data) {
             let img = document.querySelector("#{{group_tag}} div img")
-            img.src = (data.data_position === 'UP')?
+            img.src = (data.data_position === 'TOP')?
                         "{% static 'smartknx/windowblind_up.svg' %}":
                         (data.data_position === 'MIDDLE')?
                               "{% static 'smartknx/windowblind_middle.svg' %}":
