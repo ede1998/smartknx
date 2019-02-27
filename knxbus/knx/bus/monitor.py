@@ -40,7 +40,10 @@ class KnxBusMonitor(KnxTunnelConnection):
         self.loop.call_later(50, self.knx_keep_alive)
     
     def send_message(self, group, value):
-        asyncio.create_task(self.apci_group_value_write(group, value=int(value)))
+        values = value.split(' ', 1)
+        size = int(values[0])
+        value = int(values[1])
+        asyncio.create_task(self.apci_group_value_write(group, value=value, size=size))
 
     def subscribe_to_redis(self):
         self.redis = RedisConnector()

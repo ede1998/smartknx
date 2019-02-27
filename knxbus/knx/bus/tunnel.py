@@ -589,9 +589,9 @@ class KnxTunnelConnection(asyncio.DatagramProtocol):
         else:
             return False
 
-    async def apci_group_value_write(self, target, value=0):
+    async def apci_group_value_write(self, target, value=0, size=1):
         tunnel_request = self.make_tunnel_request(target)
-        tunnel_request.apci_group_value_write(value=value)
+        tunnel_request.apci_group_value_write(value=value, size=size)
         LOGGER.trace_outgoing(tunnel_request)
         value = await self.send_data(tunnel_request.get_message(), target)
         if isinstance(value, KnxTunnellingRequest) and \

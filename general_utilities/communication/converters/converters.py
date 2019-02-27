@@ -28,6 +28,8 @@ class B1Converter(BaseConverter):
         'DPT_ShutterBlinds_Mode',
     ]
 
+    bit_size = 1
+
     def __init__(self):
         super().__init__()
         self.data = False
@@ -53,6 +55,8 @@ class U8Converter(BaseConverter):
         'DPT_DecimalFactor',
     ]
 
+    bit_size = 8
+
     def __init__(self):
         super().__init__()
         self.data = 0
@@ -74,6 +78,8 @@ class B5Converter(BaseConverter):
     datapoint_types = [
         'DPT_Custom_HagerStatus'
     ]
+
+    bit_size = 5
 
     class Position(IntEnum):
         MIDDLE = 0

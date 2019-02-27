@@ -8,12 +8,14 @@ from knx.data.constants import CEMI_APCI_TYPES, _CEMI_APCI_TYPES
 
 class Apci(object):
     def __init__(self, apci_type=None, apci_data=None,
-                 data=None):
+                 data=None, apci_bit_size=1):
         if isinstance(apci_type, str):
             apci_type = CEMI_APCI_TYPES.get(apci_type)
         self.apci_type = apci_type
         self.apci_data = apci_data
         self.data = data
+        self.apci_bit_size = apci_bit_size
+        assert apci_bit_size > 0
 
     def __repr__(self):
         return '%s apci_type: %s, apci_data: %s' % (
@@ -32,6 +34,7 @@ class Apci(object):
     def pack(self):
         # TODO: nasty hacks
         apci = 0
+        payload = None
         apci_type_len = len(bin(self.apci_type)[2:])
         data_space = 10 - apci_type_len
         if apci_type_len <= 4:
@@ -41,15 +44,20 @@ class Apci(object):
             while len(bin(self.apci_type)[2:]) < 10:
                 self.apci_type *= 2
         apci |= self.apci_type << 0
-        if self.apci_data:
+        if self.apci_data and self.apci_bit_size <= 6:
             i = 0
             while data_space > 0:
                 apci |= ((self.apci_data >> i) & 1) << i
                 i += 1
                 data_space -= 1
             #apci |= self.apci_data << 0
+        elif self.apci_data:
+            assert self.apci_bit_size % 8 == 0
+            assert self.apci_bit_size <= 8, 'data longer than 8 bit not yet supported'
+            # can only send unsigned bytes as payload
+            payload = struct.pack('!B', self.apci_data)
         #apci = struct.pack('!H', apci)
-        return apci
+        return apci, payload
 
     def unpack(self, data=None):
         data = data or self.data

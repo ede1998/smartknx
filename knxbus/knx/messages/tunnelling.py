@@ -301,7 +301,7 @@ class KnxTunnellingRequest(KnxMessage):
         self.cemi_frame = cemi
         self.pack_knx_message()
 
-    def apci_group_value_write(self, value=0):
+    def apci_group_value_write(self, value=0, size=1):
         """A_GroupValue_Write"""
         cemi = CemiFrame()
         cemi = cemi.pack()
@@ -310,7 +310,8 @@ class KnxTunnellingRequest(KnxMessage):
                                            destination_type=1,
                                            tpci_type='UDP',
                                            apci_type='A_GroupValue_Write',
-                                           apci_data=value)
+                                           apci_data=value,
+                                           apci_bit_size=size)
         cemi.extend(data_request.pack())
         self.cemi_frame = cemi
         self.pack_knx_message()

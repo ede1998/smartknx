@@ -191,7 +191,7 @@ class ExtendedDataRequest(object):
     # checksum
     def __init__(self, knx_source=None, knx_destination=None, routing_count=6,
                  data=None, destination_type=0, tpci_type=None, tpci_sequence=0,
-                 apci_type=None, apci_data=None, message=None, tpci_control_type=None):
+                 apci_type=None, apci_data=None, message=None, tpci_control_type=None, apci_bit_size=1):
         self.control_field = None
         self.extended_control_field = None
         self.npci = None
@@ -206,6 +206,8 @@ class ExtendedDataRequest(object):
         self.tpci_control_type = tpci_control_type
         self.apci_type = apci_type
         self.apci_data = apci_data
+        self.apci_bit_size = apci_bit_size
+        assert apci_bit_size > 0
         self.data = data or bytearray()
         if message:
             self.unpack(message)
@@ -348,6 +350,8 @@ class ExtendedDataRequest(object):
             data_len = len(self.data)
         if self.apci_type:
             data_len += 1
+        if self.apci_bit_size > 6:
+            data_len += min(self.apci_bit_size // 8, 1)
         data_request.extend(struct.pack('!B', data_len))
         if self.tpci_type:
             tpci = Tpci(tpci_type=self.tpci_type,
@@ -359,8 +363,9 @@ class ExtendedDataRequest(object):
                 tpci |= TPCI_NUMBERED_CONTROL_DATA_TYPES.get(self.tpci_control_type) << 0
         if self.apci_type:
             apci = Apci(apci_type=self.apci_type,
-                        apci_data=self.apci_data)
-            apci = apci.pack()
+                        apci_data=self.apci_data,
+                        apci_bit_size=self.apci_bit_size)
+            apci, payload = apci.pack()
             apci |= ((tpci >> 2) & 1) << 10
             apci |= ((tpci >> 3) & 1) << 11
             apci |= ((tpci >> 4) & 1) << 12
@@ -368,6 +373,8 @@ class ExtendedDataRequest(object):
             apci |= ((tpci >> 6) & 1) << 14
             apci |= ((tpci >> 7) & 1) << 15
             data_request.extend(struct.pack('!H', apci))
+            if self.apci_bit_size > 6:
+                data_request.extend(payload)
         else:
             data_request.extend(struct.pack('<H', tpci))
         if self.data:

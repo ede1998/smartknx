@@ -34,9 +34,9 @@ async def handle_client_message(msg):
     except KeyError:
         return
         
-    msg = ConverterManager.serialize_binary(group_address)
+    msg = str(converter.bit_size) + ' ' + str(ConverterManager.serialize_binary(group_address))
 
-    await _redis.publish(group_address, str(msg))
+    await _redis.publish(group_address, msg)
 
 
 async def ws_handler(websocket, path):
