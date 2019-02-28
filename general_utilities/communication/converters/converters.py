@@ -76,7 +76,7 @@ class U8Converter(BaseConverter):
 
 class B5Converter(BaseConverter):
     datapoint_types = [
-        'DPT_Custom_HagerStatus'
+        'DPT_Custom_HagerStatus',
     ]
 
     bit_size = 5
@@ -116,3 +116,37 @@ class B5Converter(BaseConverter):
 
     def read_json(self):
         return {'data_position': self.data_position.name, 'data_mode': self.data_mode.name}
+
+class B1U3Converter(BaseConverter):
+    datapoint_type = [
+        'DPT_Control_Blinds',
+        'DPT_Control_Dimming',
+    ]
+    
+    bit_size = 4
+    
+    class Direction(IntEnum):
+        INCREASE = 1
+        DECREASE = 0
+    
+    def __init__(self):
+        super().__init__()
+        self.data_direction = B1U3Converter.Direction.DECREASE
+        self.data_step_code = 0
+
+    def write_binary(self, data):
+        data = data[-1] & 0xFF
+        self.data_direction = B1U3Converter.Direction((data & 0b1000) >> 3)
+        self.data_step_code = data & 0b111
+
+    def read_binary(self):
+        data = (self.data_direction << 3) & self.data_step_code
+        return data
+
+    def write_json(self, data):
+        direction = data['data_direction']
+        self.data_direction = B1U3Converter.Direction.__dict__[direction]
+        self.data_step_code = data['data_step_code']
+
+    def read_json(self):
+        return {'data_step_code': self.data_step_code, 'data_direction': self.data_direction.name}
