@@ -30,7 +30,7 @@
                               "{% static 'smartknx/windowblind_down.svg' %}";
         }
 
-        slider.on("slide", function(sliderValue) {
+        slider.on("slideStop", function(sliderValue) {
             const msg = { group_address:"{{device.write_position.group_address}}", data: sliderValue};
             knxSocket.send(JSON.stringify(msg));
         });
