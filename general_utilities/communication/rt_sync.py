@@ -6,9 +6,7 @@ import oyaml as yaml
 from threading import Thread
 import logging
 
-logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.DEBUG)
 
 _connections = set()
 _redis = None
