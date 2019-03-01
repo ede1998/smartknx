@@ -1,0 +1,4 @@
+aioredis>=1.2.0
+Django>=2.1.7
+oyaml>=0.7
+websockets>=7.0
