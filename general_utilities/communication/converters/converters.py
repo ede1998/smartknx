@@ -118,7 +118,7 @@ class B5Converter(BaseConverter):
         return {'data_position': self.data_position.name, 'data_mode': self.data_mode.name}
 
 class B1U3Converter(BaseConverter):
-    datapoint_type = [
+    datapoint_types = [
         'DPT_Control_Blinds',
         'DPT_Control_Dimming',
     ]

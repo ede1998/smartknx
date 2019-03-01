@@ -4,6 +4,11 @@ from .converters import *
 from .pubsub import RedisConnector
 import oyaml as yaml
 from threading import Thread
+import logging
+
+logging.basicConfig()
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
 
 _connections = set()
 _redis = None
@@ -17,6 +22,7 @@ def handle_redis_message(chan, content):
         return
 
     json_msg = ConverterManager.serialize_json(chan)
+    LOGGER.info('new redis message: %s' % (json_msg,))
 
     # inform clients about state change
     for websocket in _connections:
@@ -29,9 +35,11 @@ def send_initial_states(websocket):
 
 
 async def handle_client_message(msg):
+    LOGGER.info('new message from a client: %s' % (msg,))
     try:
         group_address, converter = ConverterManager.unserialize_json(msg)
     except KeyError:
+        LOGGER.warning('message lead to key error: ' + msg)  
         return
         
     msg = str(converter.bit_size) + ' ' + str(ConverterManager.serialize_binary(group_address))
@@ -43,12 +51,14 @@ async def ws_handler(websocket, path):
     # Register.
     _connections.add(websocket)
     try:
+        LOGGER.info('new connection: %s' % (websocket.remote_address,))
         send_initial_states(websocket)
         async for msg in websocket:
             await handle_client_message(msg)
     except asyncio.CancelledError:
         pass
     finally:
+        LOGGER.info('connection closed: %s' % (websocket.remote_address,))
         # Unregister.
         _connections.remove(websocket)
         # Close connection safely

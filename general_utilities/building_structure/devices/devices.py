@@ -63,14 +63,13 @@ class Dimmer(Device):
     yaml_tag = u'!Dimmer'
     template = 'smartknx/card_dimmer.html'
 
-    def __init__(self, read, write, write_step, write_position, read_position, name='Dimmer'):
+    def __init__(self, read, write, write_position, read_position, name='Dimmer'):
         super().__init__(name)
         self.read = get_group_address_converter(read, 'DPT_Switch')
         self.write = get_group_address_converter(write, 'DPT_Switch')
-        self.write_step = get_group_address_converter(write_step, 'DPT_Control_Dimming')
         self.write_position = get_group_address_converter(write_position, 'DPT_Scaling')
         self.read_position = get_group_address_converter(read_position, 'DPT_Scaling')
 
     def __repr__(self):
-        return "%s(name=%r, read=%r, write=%r, write_step=%r, write_position=%r, read_position=%r)" % (
-            self.__class__.__name__, self.name, self.read, self.write, self.write_step, self.write_position, self.read_position)
+        return "%s(name=%r, read=%r, write=%r, write_position=%r, read_position=%r)" % (
+            self.__class__.__name__, self.name, self.read, self.write, self.write_position, self.read_position)
