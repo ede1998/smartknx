@@ -1,0 +1,45 @@
+{% load static %}
+{% load smartknx_extra %}
+{% with group_tag_top=device.read_top.group_address|group_address_to_tag %}
+{% with group_tag_bottom=device.read_bottom.group_address|group_address_to_tag %}
+<div class="card bg-dark text-white" id="{{ group_tag_top }}">
+    <div class="card-body d-flex flex-column justify-content-center" id="{{ group_tag_bottom }}">
+      <img class="mb-3" src="{% static 'smartknx/garage_down.svg' %}" alt="Card image" style="max-height:25vh">
+    </div>
+    <div class="card-footer text-center">
+      <h4 class="card-text">{{ device.name }}</h4>
+    </div>
+    <script type="text/javascript">
+    {
+        let div_element = document.querySelector("#{{group_tag_top}}");
+        let div_element2 = document.querySelector("#{{group_tag_bottom}}");
+        const tag_name = "{{device.write_stop.group_address|group_address_to_tag}}";
+
+
+        div_element.update = function (data) {
+            let img = document.querySelector("#{{group_tag_top}} div img")
+            img.src = (data.data === true)?
+                        "{% static 'smartknx/garage_up.svg' %}":
+                        "{% static 'smartknx/garage_middle.svg' %}";
+        }
+
+        div_element2.update = function (data) {
+            let img = document.querySelector("#{{group_tag_bottom}} img")
+            img.src = (data.data === true)?
+                        "{% static 'smartknx/garage_down.svg' %}":
+                        "{% static 'smartknx/garage_middle.svg' %}";
+        }
+
+        div_element.onclick = function () {
+            let msg = {group_address: "{{device.write_stop.group_address}}", data: true};
+            knxSocket.send(JSON.stringify(msg));
+            delete msg.group_address;
+            group_states[tag_name] = msg;
+            div_element.update(msg);
+        }
+
+    }
+    </script>
+</div>
+{% endwith %}
+{% endwith %}

@@ -1,7 +1,9 @@
 import itertools
 import oyaml as yaml  # make sure order in yaml file is preserved
 from ...communication.converters import *
+import logging
 
+LOGGER = logging.getLogger(__name__)
 
 def get_converter(group_address, datapoint_type=None):
    try:

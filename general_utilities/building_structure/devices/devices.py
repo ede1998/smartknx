@@ -41,9 +41,15 @@ class BlindOld(Device):
         self.write_stop = get_group_address_converter(write_stop, 'DPT_Start')
 
 
-#class GarageDoor(BlindOld):
-    #def __init__(self, name='Garage'):
-        #super().__init__(name)
+class Garage(Device):
+    yaml_tag = u'!Garage'
+    template = 'smartknx/card_garage.html'
+
+    def __init__(self, read_top, read_bottom, write_stop, name='Garage'):
+        super().__init__(name)
+        self.write_stop = get_group_address_converter(write_stop, 'DPT_Start')
+        self.read_top = get_group_address_converter(read_top, 'DPT_Bool')
+        self.read_bottom = get_group_address_converter(read_bottom, 'DPT_Bool')
 
 
 class Blind(Device):
