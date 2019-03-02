@@ -136,4 +136,5 @@ layout.yaml
 network.yaml
 group-address-types.yaml
 website/website/settings_deploy.py
+config/logging.yaml
 

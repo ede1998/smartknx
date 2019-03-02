@@ -2,7 +2,7 @@ import asyncio
 import websockets
 from .converters import *
 from .pubsub import RedisConnector
-import oyaml as yaml
+import os
 from threading import Thread
 import logging
 
@@ -72,10 +72,8 @@ async def redis_handler():
 async def main():
     global _loop
     _loop = asyncio.get_running_loop()
-    with open('../config/network.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-        ip = config['ws_host']
-        port = 8765
+    port = os.environ.get('WS_PORT', '8765')
+    
     
     # if we don't get a connection to redis, websockets would also return immediately
     # so we need a helper coro, that keeps the loop running
@@ -83,7 +81,7 @@ async def main():
         while True:
             await asyncio.sleep(100)
 
-    ws_coro = websockets.serve(ws_handler, ip, port)
+    ws_coro = websockets.serve(ws_handler, '0.0.0.0', port)
     redis_coro = redis_handler()
     waiter_coro = waiter()
 

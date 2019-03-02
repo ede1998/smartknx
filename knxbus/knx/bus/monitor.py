@@ -24,6 +24,7 @@ class KnxBusMonitor(KnxTunnelConnection):
         self.sequence_counter_incoming = -1
 
     def connection_made(self, transport):
+        LOGGER.debug('Connection opened to knx gateway')
         self.transport = transport
         self.peername = self.transport.get_extra_info('peername')
         self.sockname = self.transport.get_extra_info('sockname')
@@ -144,25 +145,16 @@ class KnxBusMonitor(KnxTunnelConnection):
             dst_addr = message.parse_knx_group_address(cemi.knx_destination)
         elif cemi.knx_destination:
             dst_addr = message.parse_knx_address(cemi.knx_destination)
-        if self.group_monitor:
-            format = ('[ chan_id: {chan_id}, seq_no: {seq_no}, message_code: {msg_code}, '
-                      'source_addr: {src_addr}, dest_addr: {dst_addr}, tpci_type: {tpci_type}, '
-                      'tpci_seq: {tpci_seq}, apci_type: {apci_type}, apci_data: {apci_data} ]').format(
-                chan_id=message.communication_channel,
-                seq_no=message.sequence_counter,
-                msg_code=CEMI_PRIMITIVES.get(cemi.message_code),
-                src_addr=message.parse_knx_address(cemi.knx_source),
-                dst_addr=dst_addr,
-                tpci_type=_CEMI_TPCI_TYPES.get(tpci.tpci_type),
-                tpci_seq=tpci.sequence,
-                apci_type=_CEMI_APCI_TYPES.get(apci.apci_type),
-                apci_data=apci.apci_data)
-        else:
-            format = ('[ chan_id: {chan_id}, seq_no: {seq_no}, message_code: {msg_code}, '
-                      'timestamp: {timestamp}, raw_frame: {raw_frame} ]').format(
-                chan_id=message.communication_channel,
-                seq_no=message.sequence_counter,
-                msg_code=CEMI_PRIMITIVES.get(cemi.message_code),
-                timestamp=codecs.encode(cemi.additional_information.get('timestamp'), 'hex'),
-                raw_frame=codecs.encode(cemi.raw_frame, 'hex'))
+        format = ('[chan_id:{chan_id},seq_no:{seq_no},message_code:{msg_code},'
+                  'source_addr:{src_addr},dest_addr:{dst_addr},tpci_type:{tpci_type},'
+                  'tpci_seq:{tpci_seq},apci_type:{apci_type},apci_data:{apci_data}]').format(
+            chan_id=message.communication_channel,
+            seq_no=message.sequence_counter,
+            msg_code=CEMI_PRIMITIVES.get(cemi.message_code),
+            src_addr=message.parse_knx_address(cemi.knx_source),
+            dst_addr=dst_addr,
+            tpci_type=_CEMI_TPCI_TYPES.get(tpci.tpci_type),
+            tpci_seq=tpci.sequence,
+            apci_type=_CEMI_APCI_TYPES.get(apci.apci_type),
+            apci_data=apci.apci_data)
         LOGGER.info(format)

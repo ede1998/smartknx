@@ -4,10 +4,10 @@
 
 "use strict";
 
-let group_states = {}
+let group_states = {};
 
 let knxSocket = new WebSocket(
-    'ws://' + window.location.hostname + ":8765")
+    'ws://' + window.location.hostname + ":" + WS_PORT);
 
 knxSocket.onmessage = function (e) {
     let msg = JSON.parse(e.data);

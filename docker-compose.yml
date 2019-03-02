@@ -1,23 +1,33 @@
-version: '3'
+version: '3.4'
 services:
   redis:
     image: "redis"
+    ports:
+      - "127.0.0.1:6379:6379"
   web:
     build:
       context: .
       dockerfile: website.dockerfile
+    environment:
+      - "REDIS_SERVER=smartknx_redis_1:6379"
+      - "WS_PORT=8765"
     command: python manage.py runserver 0.0.0.0:80 --noreload #--settings=website.settings_deploy
     volumes:
       - ./config:/config
     ports:
       - "80:80"
-      - "127.0.0.1:8765:8765"
+      - "8765:8765"
     depends_on:
       - redis
   knx:
     build:
       context: .
       dockerfile: knxbus.dockerfile
+    network_mode: host
+    environment:
+      - "KNX_GATEWAY=192.168.140.21:3671"
+      - "REDIS_SERVER=localhost:6379"
+      - "WS_PORT=8765"
     command: python main.py
     volumes:
       - ./config:/config

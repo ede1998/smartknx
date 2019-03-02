@@ -193,7 +193,6 @@ class KnxCommunicator(object):
             functools.partial(KnxBusMonitor, future, group_monitor=group_monitor_mode),
             remote_addr=list(self.targets)[0])
         self.bus_protocols.append(protocol)
-        LOGGER.debug('here i am')
         await future
 
     async def group_writer(self, target, value=0, routing=False, desc_timeout=2,

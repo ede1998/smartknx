@@ -4,6 +4,10 @@ import sys
 from knx.communicator import KnxCommunicator
 from knx.targets import Targets
 from knx.misc import setup_logger
+import os
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 # asyncio requires at least Python 3.3
 if sys.version_info.major < 3 or \
@@ -23,6 +27,8 @@ except ImportError:
 def start():
     setup_logger(2)
     loop = asyncio.get_event_loop()
+    ip, port = os.environ.get('KNX_GATEWAY', 'localhost:3671').split(':')
+    LOGGER.info('Connecting to knx gateway: (%s,%s)', ip, port)
 
     knxcom = KnxCommunicator()
     try:
@@ -30,7 +36,7 @@ def start():
 #                 target=args.group_write_address,
 #                 value=args.group_write_value))
         loop.run_until_complete(knxcom.monitor(
-            targets=Targets('192.168.140.21', 3671).targets,
+            targets=Targets(ip, port).targets,
             group_monitor_mode=True))
     except KeyboardInterrupt:
         for t in asyncio.Task.all_tasks():
