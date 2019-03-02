@@ -2,3 +2,24 @@ version: '3'
 services:
   redis:
     image: "redis"
+  web:
+    build:
+      context: .
+      dockerfile: website.dockerfile
+    command: python manage.py runserver 0.0.0.0:80 --noreload #--settings=website.settings_deploy
+    volumes:
+      - ./config:/config
+    ports:
+      - "80:80"
+      - "127.0.0.1:8765:8765"
+    depends_on:
+      - redis
+  knx:
+    build:
+      context: .
+      dockerfile: knxbus.dockerfile
+    command: python main.py
+    volumes:
+      - ./config:/config
+    depends_on:
+      - redis

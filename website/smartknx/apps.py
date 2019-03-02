@@ -9,5 +9,6 @@ class SmartknxConfig(AppConfig):
    
     def ready(self):
         assert os.environ.get('RUN_MAIN', None) != 'true', "start server with --noreload"
-        if "runserve" in sys.argv:
+        print(sys.argv)
+        if "runserver" in sys.argv:
             rt_sync.run_in_thread()

@@ -1,6 +1,9 @@
 import asyncio
 import aioredis
+import oyaml as yaml
+import logging
 
+LOGGER = logging.getLogger(__name__)
 
 class RedisConnector:
 
@@ -13,10 +16,13 @@ class RedisConnector:
 
     async def create_con_pool(self):
         try:
-            self.con_pool = await aioredis.create_redis_pool('redis://localhost')
+            with open('../config/network.yaml', 'r') as f:
+                config = yaml.safe_load(f)
+                url = config['redis']
+            self.con_pool = await aioredis.create_redis_pool(url)
             self.is_connected = True
         except OSError as e:
-            print(e)
+            LOGGER.error(e)
 
     async def psubscribe(self):
         channels = await self.con_pool.psubscribe(self.sub_channel_prefix + "*")
