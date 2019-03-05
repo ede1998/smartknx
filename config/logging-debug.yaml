@@ -8,6 +8,10 @@ handlers:
     level: DEBUG
     formatter: simple
     stream: ext://sys.stdout
+loggers:
+  websockets.protocol:
+    level: INFO
+    handlers: [console]
 root:
   level: DEBUG
   handlers: [console]
